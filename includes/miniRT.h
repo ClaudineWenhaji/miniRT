@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 00:16:12 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/12 16:17:08 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/12 17:30:49 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,50 @@ typedef struct s_cone
 	double		radius;
 	double		height;
 } t_cone;
+
+typedef struct	s_material
+{
+	t_color	color;
+	double	ambient;
+	double	diffuse;
+	double	specular;
+	double	reflection;
+	double	refraction;
+} t_material;
+
+typedef struct	s_hit
+{
+	double		t;
+	t_point		point;
+	t_vec		normal;
+	t_material	*mat;
+	int		front_face;
+} t_hit;
+
+typedef int	(*t_intersect_fn)
+(
+	struct s_object *obj,
+	t_ray	ray,
+	double	tmin,
+	double	tmax,
+	t_hit	*hit;
+);
+
+typedef struct	s_object
+{
+	t_type		type;
+	void		*data;
+	t_material	material;
+	t_intersect_fn  intersect;
+	struct s_object	*next;
+} t_object;
+
+typedef struct	s_scene
+{
+	t_camera	camera;
+	t_light		*lights;
+	t_object	*objects;
+} t_scene;
 
 double	vec_length(t_vec v);
 double	vec_dot(t_vec u, t_vec v);
