@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 00:16:12 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/12 17:30:49 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/13 14:57:03 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,11 @@
 # include <stdio.h>
 # include <unistd.h>
 # include "mlx.h"
+
+# define EPSILON 0.0001
+# define WINDOWS_WIDTH 1920
+# define WINDOWS_HEIGHT 1080
+# define PI 3.14
 
 typedef struct	s_vec
 {
@@ -54,23 +59,23 @@ typedef struct	s_light
 typedef struct	s_ray
 {
 	t_point	origin;
-	t_vec		dir;
+	t_vec		direction;
 } t_ray;
 
 typedef struct	s_camera
 {
 	t_point	viewpoint;
+	t_vec	direction;
+	double		fov;
 	
 // ces 3 vecteurs definissent les directions vers lesquelles
 // regarde la camera et forment une base orthonormee
 
-// ray.dir = forward + u*right + v*up our chaque pixel du rayon 
+// ray.dir = forward + u*right + v*up pour chaque pixel du rayon 
 
 	t_vec		forward; // direction dans la scene
 	t_vec		right;   // direction vers la droite de la camera
 	t_vec		up;		 // direction vers le haut
-
-	double		fov;
 } t_camera;
 
 typedef enum	e_type
@@ -134,7 +139,7 @@ typedef int	(*t_intersect_fn)
 	t_ray	ray,
 	double	tmin,
 	double	tmax,
-	t_hit	*hit;
+	t_hit	*hit
 );
 
 typedef struct	s_object
