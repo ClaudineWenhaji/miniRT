@@ -88,8 +88,9 @@ typedef enum	e_type
 
 typedef struct	s_sphere
 {
-	t_point	center;
+	t_point		center;
 	double		radius;
+	int			color;
 } t_sphere;
 
 typedef struct	s_plane
