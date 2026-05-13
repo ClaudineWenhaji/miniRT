@@ -12,7 +12,7 @@
 
 #include "miniRT.h"
 
-void    ray_elements(t_ray *ray, t_point *ori, t_vec *dir)
+void    ray_variables(t_ray *ray, t_point *ori, t_vec *dir)
 {
     ray->origin.x = ori->x;
     ray->origin.y = ori->y;
