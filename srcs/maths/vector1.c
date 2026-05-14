@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 14:06:09 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/12 16:16:01 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/14 09:42:03 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ t_vec	vec_reflection(t_vec v, t_vec n)
 {
 	t_vec	result;
 
-	result = vec_scale(n, 2.0 * vec_dot(v, n));
+	result = vec_mult(n, 2.0 * vec_dot(v, n));
 	result = vec_sub(v, result);
 	return (result);
 }

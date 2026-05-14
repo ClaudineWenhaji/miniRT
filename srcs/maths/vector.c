@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 12:53:02 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/13 10:46:14 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/14 09:12:44 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ double	vec_length(t_vec v)
 	return (sqrt(v.x * v.x + v.y * v.y + v.z * v.z));
 }
 
-t_vec	vec_scale(t_vec v, double k)
+t_vec	vec_mult(t_vec v, double k)
 {
 	t_vec	result;
 
