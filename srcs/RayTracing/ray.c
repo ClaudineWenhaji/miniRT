@@ -20,7 +20,7 @@ void    ray_variables(t_ray *ray, t_point *ori, t_vec *dir)
     ray->direction.x = dir->x;
     ray->direction.y = dir->y;
     ray->direction.z = dir->z;
-    vec_normalize(ray->direction);
+    ray->direction =vec_normalize(ray->direction);
 }
 
 t_vec   *ray_equation(t_vec *ray_coord, t_ray *ray, double t)
@@ -29,4 +29,29 @@ t_vec   *ray_equation(t_vec *ray_coord, t_ray *ray, double t)
     ray_coord->y = ray->origin.y + (t * ray->direction.y);
     ray_coord->z = ray->origin.z + (t * ray->direction.z);
     return (ray_coord);
+}
+
+t_color  trace_ray(t_data *data, t_ray ray)
+{
+    t_object    *object;
+    double      closest_t;
+    double      t;
+    t_color     pixel_color;
+
+    pixel_color = (t_color){0, 0, 0};
+    closest_t = INFINITY;
+    object = data->scene->objects;
+    while (object)
+    {
+        if (object->intersect(object->data, ray, &t))
+        {
+                if (t < closest_t)
+                {
+                    closest_t = t;
+                    pixel_color = object->color;
+                }
+        }
+        object = object->next;
+    }
+    return (pixel_color);
 }

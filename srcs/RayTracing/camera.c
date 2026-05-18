@@ -18,7 +18,8 @@ void    setup_camera(t_camera *camera)
     
     camera->forward = vec_normalize(camera->direction);
     world_up = vector(0,1,0);
-    if (fabs(camera->forward.y) > 0.999)
+    //if (fabs(camera->forward.y) > 0.999)
+    if (camera->forward.x == 0 && camera->forward.z == 0)
         world_up = vector(0,0,1);
     camera->right = vec_normalize(vec_cross_prod(camera->forward, world_up));
     camera->up = vec_cross_prod(camera->right, camera->forward);
