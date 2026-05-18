@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 14:35:40 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/14 09:30:01 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/18 18:45:35 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ t_ray   camera_ray(t_camera *camera, int pixel_x, int pixel_y)
     // Ecran [-1, 1]
     px = ((2.0 * px) - 1) * aspect * scale;
     py = (1.0 - (2.0 * py)) * scale;
+    // ray.dir = forward + u*right + v*up pour chaque pixel du rayon 
     ray.direction = vec_add(
         camera->forward,
         vec_add(

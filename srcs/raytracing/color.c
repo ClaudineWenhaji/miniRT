@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/18 16:35:02 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/18 16:46:06 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/18 19:01:41 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,17 @@ int color_to_int(t_color color)
     return ((r << 16) | (g << 8) | b);
 }
 
+// ecrire un pixel de couleur donnee dans une image, a la position x,y
+// on manipule les memoires graphiques donc char * pour avance de 1 octet
+// int * permet d'avancer de 4 octets (32 bits)
 void put_pixel(t_img *img, int x, int y, int color)
 {
-    char    *dst;
+    char    *dest;
     
     if (x < 0 || y < 0 || x >= WINDOWS_WIDTH || y >= WINDOWS_HEIGHT)
         return ;
-    dst = img->data
+    dest = img->data
         + (y * img->size_line)
         + (x * (img->bit_per_pixel / 8));
-    *(unsigned int *)dst = color;
+    *(unsigned int *)dest = color;
 }

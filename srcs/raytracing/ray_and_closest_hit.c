@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 12:48:21 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/18 18:29:29 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/18 19:07:17 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,12 +60,16 @@ t_color  trace_ray(t_data *data, t_ray ray)
                 {
                     closest_t = t;
                     sphere = (t_sphere *)object->data;
+                    // hit_point = ray.origin + ray.direction * t
                     hit_point = vec_add(ray.origin, vec_mult(ray.direction, t));
                     normal = vec_normalize(vec_sub(hit_point, sphere->center));
                     light_dir = vec_normalize(vec_sub(light->pos, hit_point));
-                    intensity = vec_dot(normal, light_dir);
+                    // intensite lambert I = N.L eclaire selon l'angle de la lumiere
+                    intensity = vec_dot(normal, light_dir); // ici angle nul
+                    // clamp 
                     if (intensity < 0)
                         intensity = 0;
+                    // couleur finale = couleur de base * Intensite
                     pixel_color.red = sphere->color.red * intensity;
                     pixel_color.green = sphere->color.green * intensity;
                     pixel_color.blue = sphere->color.blue * intensity;
