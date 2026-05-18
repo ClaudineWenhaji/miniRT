@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Intersect.c                                        :+:      :+:    :+:   */
+/*   objects.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/14 09:43:43 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/14 10:23:12 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/18 16:47:38 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "miniRT.h"
 
-bool intersect_sphere(void *data, t_ray ray, double *t)
+int intersect_sphere(void *data, t_ray ray, double *t)
 {
     t_sphere *sphere;
     double  discriminant;
@@ -43,15 +43,3 @@ bool intersect_sphere(void *data, t_ray ray, double *t)
     return (1);
 }
 
-bool intersect_object(t_object *object, t_ray ray, double *t)
-{
-    if (object->type == SPHERE)
-        return (intersect_sphere((t_sphere *)object->data, ray, t));
-    else if (object->type == PLANE)
-        return (intersect_plane((t_plane *)object->data, ray, t));
-    else if (object->type == CYLINDER)
-        return (intersect_cylinder((t_cylinder *)object->data, ray, t));
-    else if (object->type == CONE)
-        return (intersect_cone((t_cone *)object->data, ray, t));
-    return (FALSE); 
-}

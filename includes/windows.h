@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   windows.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vnaoussi <vnaoussi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/14 02:23:45 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/14 12:00:14 by vnaoussi         ###   ########.fr       */
+/*   Updated: 2026/05/18 16:30:37 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 #include "../minilibx-linux/mlx.h"
 
-# define WIN_WIDTH 1920
-# define WIN_HEIGHT 1080
+# define WINDOWS_WIDTH 1920
+# define WINDOWS_HEIGHT 1080
 # define FDF_TITLE "minirt : "
 # define COLOR_DISCO 0x9A1F6A
 # define COLOR_BRICK 0xC2294E

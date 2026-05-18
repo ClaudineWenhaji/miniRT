@@ -2,15 +2,17 @@ NAME            = miniRT
 CC              = cc
 CFLAGS          = -Wall -Wextra -Werror -Iincludes -Ilibft
 LDFLAGS         = -Llibft -lft
-MLX_FLAGS		= -L$(MLX_DIR) -lmlx -L/usr/lib -lXext -lX11 -lm -lbsd
+MLX_FLAGS	= -L$(MLX_DIR) -lmlx -L/usr/lib -lXext -lX11 -lm -lbsd
 
 SRCS            = $(shell find ./srcs -name "*.c")
 OBJS            = $(SRCS:%.c=%.o)
+
 INC_DIR         = includes
 LIBFT_DIR       = libft
-MLX_DIR			= minilibx-linux
+MLX_DIR		= minilibx-linux
+
 LIBFT           = $(LIBFT_DIR)/libft.a
-MLX				= $(MLX_DIR)/libmlx.a
+MLX		= $(MLX_DIR)/libmlx.a
 
 GREEN           = \033[0;32m
 RED             = \033[0;31m

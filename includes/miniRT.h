@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 00:16:12 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/13 14:57:03 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/18 18:19:52 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ typedef struct	s_color
 } t_color;
 
 typedef t_vec	t_point;
-//typedef t_vec	t_color;
 
 typedef enum e_type_light
 {
@@ -154,24 +153,11 @@ typedef struct	s_hit
 
 struct s_object;
 
-/*typedef int	(*t_intersect_fn)
-(
-	struct s_object *obj,
-	t_ray	ray,
-	double	tmin,
-	double	tmax,
-	t_hit	*hit
-);*/
-
-typedef bool    (*t_intersect_fn)(void *data, t_ray ray, double *t);
-
 typedef struct	s_object
 {
 	t_type		type;
 	void		*data;
 	t_color		color;
-	t_intersect_fn  intersect;
-	struct s_object	*next;
 } t_object;
 
 typedef struct	s_scene
@@ -216,9 +202,13 @@ t_cylinder      *get_cylinder(char **line);
 int                     get_vector_from_str(char *vector_str, t_vec *vectors);
 int                     get_color_from_str(char *color_str, t_color *color);
 
-t_ray   camera_ray(t_camera *camera, int pixel_x, int pixel_y);
-t_color  trace_ray(t_data *data, t_ray ray);
+void	setup_camera(t_camera *camera);
+t_ray	camera_ray(t_camera *camera, int pixel_x, int pixel_y);
+t_color	trace_ray(t_data *data, t_ray ray);
+int		intersect_sphere(void *data, t_ray ray, double *t);
+int		intersect_object(t_object *object, t_ray ray, double *t);
+void	put_pixel(t_img *img, int x, int y, int color);
+int		color_to_int(t_color color);
 void    render(t_data *data);
-int     intersect_sphere(t_sphere sphere, t_ray ray, double *t);
 
 #endif

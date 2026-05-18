@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vnaoussi <vnaoussi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 17:23:21 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/14 12:25:39 by vnaoussi         ###   ########.fr       */
+/*   Updated: 2026/05/18 18:26:27 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,40 @@ static int	get_objects(char **split_line, t_list **objects)
 		return (free(object), 0);
 	return (ft_lstadd_back(objects, node), 1);
 }
+
+/*static int get_objects(char **split_line, t_list **objects)
+{
+    t_object   *object;
+    t_sphere   *sphere;
+    t_list     *node;
+
+    object = NULL;
+
+    if (ft_strcmp(split_line[0], "sp") == 0)
+    {
+        sphere = get_sphere(split_line);
+
+        if (!sphere)
+            return (0);
+
+        object = malloc(sizeof(t_object));
+        if (!object)
+            return (free(sphere), 0);
+
+        object->type = SPHERE;
+        object->data = sphere;
+        object->color = sphere->color;
+    }
+
+    node = ft_lstnew(object);
+
+    if (!node)
+        return (free(object), 0);
+
+    ft_lstadd_back(objects, node);
+
+    return (1);
+}*/
 
 static int split_and_get_scene(char *line, t_scene *scene)
 {

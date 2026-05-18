@@ -14,8 +14,8 @@ void    render(t_data *data)
         while (pixel_x < WINDOWS_WIDTH)
         {
             ray = camera_ray(&data->camera, pixel_x, pixel_y);
-            pixel_color = trace_ray(ray, data->scene, 0);
-            put_pixel(data->scene->window, pixel_x, pixel_y, pixel_color);
+            pixel_color = trace_ray(data, ray);
+            put_pixel(data->scene->window->img, pixel_x, pixel_y, color_to_int(pixel_color));
             pixel_x++;
         }
         pixel_y++;

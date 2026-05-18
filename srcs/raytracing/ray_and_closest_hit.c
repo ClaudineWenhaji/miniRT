@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ray_generation.c                                   :+:      :+:    :+:   */
+/*   ray_and_closest_hit.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 12:48:21 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/13 13:18:57 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/18 18:29:29 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,25 +33,46 @@ t_vec   *ray_equation(t_vec *ray_coord, t_ray *ray, double t)
 
 t_color  trace_ray(t_data *data, t_ray ray)
 {
+    t_list      *current;
     t_object    *object;
+    t_sphere    *sphere;
+    t_light     *light;
+    t_point     hit_point;
+    t_vec       normal;
+    t_vec       light_dir;
+    double      intensity;
     double      closest_t;
     double      t;
     t_color     pixel_color;
 
     pixel_color = (t_color){0, 0, 0};
     closest_t = INFINITY;
-    object = data->scene->objects;
-    while (object)
+    light = NULL;
+    object = NULL;
+    light = (t_light *)data->scene->lights->content;
+    current = data->scene->objects;
+    while (current)
     {
-        if (object->intersect(object->data, ray, &t))
+        object = (t_object *)current->content;
+        if (intersect_object(object, ray, &t))
         {
                 if (t < closest_t)
                 {
                     closest_t = t;
-                    pixel_color = object->color;
+                    sphere = (t_sphere *)object->data;
+                    hit_point = vec_add(ray.origin, vec_mult(ray.direction, t));
+                    normal = vec_normalize(vec_sub(hit_point, sphere->center));
+                    light_dir = vec_normalize(vec_sub(light->pos, hit_point));
+                    intensity = vec_dot(normal, light_dir);
+                    if (intensity < 0)
+                        intensity = 0;
+                    pixel_color.red = sphere->color.red * intensity;
+                    pixel_color.green = sphere->color.green * intensity;
+                    pixel_color.blue = sphere->color.blue * intensity;
+                    //pixel_color = object->color;
                 }
         }
-        object = object->next;
+        current = current->next;
     }
     return (pixel_color);
 }

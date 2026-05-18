@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vnaoussi <vnaoussi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 00:19:44 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/14 12:39:32 by vnaoussi         ###   ########.fr       */
+/*   Updated: 2026/05/18 18:25:35 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,14 @@ static int	init_img_with_color(void *mlx, t_img **img, char bytes)
 		img_tmp = (t_img *)malloc(sizeof(t_img));
 		if (!img_tmp)
 			return (0);
-		img_tmp->img_ptr = mlx_new_image(mlx, WIN_WIDTH, WIN_HEIGHT);
+		img_tmp->img_ptr = mlx_new_image(mlx, WINDOWS_WIDTH, WINDOWS_HEIGHT);
 		if (!img_tmp->img_ptr)
 			return (free(img_tmp), 0);
 		img_tmp->data = mlx_get_data_addr(img_tmp->img_ptr,
 				&(img_tmp->bit_per_pixel), &(img_tmp->size_line),
 				&(img_tmp->endian));
 	}
-	total_bytes = WIN_HEIGHT * img_tmp->size_line;
+	total_bytes = WINDOWS_HEIGHT * img_tmp->size_line;
 	ft_memset(img_tmp->data, bytes, total_bytes);
 	*img = img_tmp;
 	return (1);
@@ -49,8 +49,8 @@ static int	inits(t_scene *scene, char *name)
 	if (!init_img_with_color(scene->window->mlx, &scene->window->img,
 				0))
 		return (printf("Error\n"), 0);
-	scene->window->win = mlx_new_window(scene->window->mlx, WIN_WIDTH,
-			WIN_HEIGHT, name);
+	scene->window->win = mlx_new_window(scene->window->mlx, WINDOWS_WIDTH,
+			WINDOWS_HEIGHT, name);
 	if (!scene->window->win)
 		return (printf("Error\n"), 0);
 	if (!parsing(name, scene))
@@ -61,14 +61,21 @@ static int	inits(t_scene *scene, char *name)
 int	main(int argc, char **argv)
 {
 	t_scene	*scene;
+	t_data	data;
 
 	if (argc != 2)
 		return (printf("Usage: ./minirt <SCENE.rt>\n"), 1);
 	scene = (t_scene *)malloc(sizeof(t_scene));
 	if (!scene)
 		return (printf("Error\n"), 1);
+	//scene->objects = NULL;
+	//scene->lights = NULL;
 	if (!inits(scene, argv[1]))
 		return (ft_clean(&scene), 1);
+	data.scene = scene;
+	data.camera = scene->camera;
+	setup_camera(&data.camera);
+	render(&data);
 	mlx_put_image_to_window(scene->window->mlx, scene->window->win,
 			scene->window->img->img_ptr, 0, 0);
 	mlx_loop(scene->window->mlx);
