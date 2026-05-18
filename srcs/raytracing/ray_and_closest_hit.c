@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 12:48:21 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/18 19:07:17 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/18 19:50:26 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,17 +49,28 @@ t_color  trace_ray(t_data *data, t_ray ray)
     closest_t = INFINITY;
     light = NULL;
     object = NULL;
+    if (!data->scene->lights)
+        return ((t_color){0,0,0});
     light = (t_light *)data->scene->lights->content;
     current = data->scene->objects;
     while (current)
     {
         object = (t_object *)current->content;
+        printf("object = %p\n", object);
+        printf("type = %d\n", object->type);
+        if (object->type != SPHERE)
+        {
+            current = current->next;
+            continue;
+        }
         if (intersect_object(object, ray, &t))
         {
                 if (t < closest_t)
                 {
                     closest_t = t;
+                    printf("object->data = %p\n", object->data);
                     sphere = (t_sphere *)object->data;
+                    printf("object->data = %p\n", object->data);
                     // hit_point = ray.origin + ray.direction * t
                     hit_point = vec_add(ray.origin, vec_mult(ray.direction, t));
                     normal = vec_normalize(vec_sub(hit_point, sphere->center));

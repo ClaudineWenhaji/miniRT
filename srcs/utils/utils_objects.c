@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_objects.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vnaoussi <vnaoussi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:34:08 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/14 01:10:32 by vnaoussi         ###   ########.fr       */
+/*   Updated: 2026/05/18 19:58:04 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,12 @@ t_sphere *get_sphere(char **split_line)
 	if (!sphere)
 		return (NULL);
 	sphere->identifier = SPHERE;
-	get_vector_from_str(split_line[1], &(sphere->center));
+	if (!get_vector_from_str(split_line[1], &(sphere->center)))
+		return (free(sphere), NULL);
 	sphere->diameter = ft_atod(split_line[2]);
-	get_color_from_str(split_line[3], &(sphere->color));
+	sphere->radius = sphere->diameter / 2.0;
+	if (!get_color_from_str(split_line[3], &(sphere->color)))
+		return (free(sphere), NULL);
 	return (sphere);
 }
 

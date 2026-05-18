@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 17:23:21 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/18 18:41:06 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/18 19:41:48 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,10 @@ static int	get_objects(char **split_line, t_list **objects)
 	object = NULL;
 	if (ft_strcmp(split_line[0], "sp") == 0)
 		object = get_sphere(split_line);
-	else if (ft_strcmp(split_line[0], "pl") == 0)
+	/*else if (ft_strcmp(split_line[0], "pl") == 0)
 		object = get_plane(split_line);
 	else if (ft_strcmp(split_line[0], "cy") == 0)
-		object = get_cylinder(split_line);
+		object = get_cylinder(split_line);*/
 	if (!object)
 		return (0);
 	node = ft_lstnew(object);

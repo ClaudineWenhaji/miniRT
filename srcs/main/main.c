@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 00:19:44 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/18 18:25:35 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/18 19:23:48 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,8 @@ int	main(int argc, char **argv)
 	scene = (t_scene *)malloc(sizeof(t_scene));
 	if (!scene)
 		return (printf("Error\n"), 1);
-	//scene->objects = NULL;
-	//scene->lights = NULL;
+	scene->objects = NULL;
+	scene->lights = NULL;
 	if (!inits(scene, argv[1]))
 		return (ft_clean(&scene), 1);
 	data.scene = scene;
