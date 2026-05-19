@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 12:48:21 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/18 19:50:26 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/19 16:12:32 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,11 @@ t_vec   *ray_equation(t_vec *ray_coord, t_ray *ray, double t)
     return (ray_coord);
 }
 
-t_color  trace_ray(t_data *data, t_ray ray)
+/*t_color  trace_ray(t_data *data, t_ray ray)
 {
     t_list      *current;
     t_object    *object;
+    t_object    *closest_object;
     t_sphere    *sphere;
     t_light     *light;
     t_point     hit_point;
@@ -49,28 +50,20 @@ t_color  trace_ray(t_data *data, t_ray ray)
     closest_t = INFINITY;
     light = NULL;
     object = NULL;
-    if (!data->scene->lights)
-        return ((t_color){0,0,0});
     light = (t_light *)data->scene->lights->content;
     current = data->scene->objects;
+    
     while (current)
     {
         object = (t_object *)current->content;
-        printf("object = %p\n", object);
-        printf("type = %d\n", object->type);
-        if (object->type != SPHERE)
-        {
-            current = current->next;
-            continue;
-        }
+        
         if (intersect_object(object, ray, &t))
         {
-                if (t < closest_t)
+                if (t > EPSILON && t < closest_t)
                 {
                     closest_t = t;
-                    printf("object->data = %p\n", object->data);
+                    closest_object = object;
                     sphere = (t_sphere *)object->data;
-                    printf("object->data = %p\n", object->data);
                     // hit_point = ray.origin + ray.direction * t
                     hit_point = vec_add(ray.origin, vec_mult(ray.direction, t));
                     normal = vec_normalize(vec_sub(hit_point, sphere->center));
@@ -90,4 +83,83 @@ t_color  trace_ray(t_data *data, t_ray ray)
         current = current->next;
     }
     return (pixel_color);
+}*/
+
+t_vec  get_normal(t_object *object, t_point hit_point)
+{
+    if (object->type == SPHERE)
+    {
+        t_sphere *sp;
+
+        sp = (t_sphere *)object->data;
+        return (vec_normalize(vec_sub(hit_point, sp->center)));
+    }
+    else if (object->type == PLANE)
+    {
+        t_plane *pl;
+
+        pl = (t_plane *)object->data;
+        return (vec_normalize(pl->normal));
+    }
+
+    return ((t_vec){0, 0, 0});
+}
+
+t_color trace_ray(t_data *data, t_ray ray)
+{
+    t_list      *current;
+    t_object    *closest_obj;
+    t_light     *light;
+    t_point     hit_point;
+    t_vec       normal;
+    t_vec       light_dir;
+    t_color     color;
+    double      closest_t;
+    double      t;
+    double      intensity;
+
+    closest_t = INFINITY;
+    closest_obj = NULL;
+
+    current = data->scene->objects;
+
+    while (current)
+    {
+        t_object *obj = (t_object *)current->content;
+
+        if (intersect_object(obj, ray, &t))
+        {
+            printf("HIT\n");
+            if (t > EPSILON && t < closest_t)
+            {
+                closest_t = t;
+                closest_obj = obj;
+            }
+        }
+        current = current->next;
+    }
+
+    if (!closest_obj)
+        return ((t_color){0, 0, 0});
+
+    light = (t_light *)data->scene->lights->content;
+
+    hit_point = vec_add(ray.origin,
+            vec_mult(ray.direction, closest_t));
+
+    normal = get_normal(closest_obj, hit_point);
+
+    light_dir = vec_normalize(
+            vec_sub(light->pos, hit_point));
+
+    intensity = vec_dot(normal, light_dir);
+
+    if (intensity < 0)
+        intensity = 0;
+
+    color.red = closest_obj->color.red * intensity;
+    color.green = closest_obj->color.green * intensity;
+    color.blue = closest_obj->color.blue * intensity;
+
+    return (color);
 }

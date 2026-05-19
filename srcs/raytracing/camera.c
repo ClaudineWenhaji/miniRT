@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 14:35:40 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/18 18:45:35 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/19 16:02:54 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@ void    setup_camera(t_camera *camera)
     camera->forward = vec_normalize(camera->direction);
     world_up = vector(0,1,0);
     //if (fabs(camera->forward.y) > 0.999)
-    if (camera->forward.x == 0 && camera->forward.z == 0)
+    if (fabs(camera->forward.x) > EPSILON && fabs(camera->forward.z) > EPSILON)
         world_up = vector(0,0,1);
     camera->right = vec_normalize(vec_cross_prod(camera->forward, world_up));
-    camera->up = vec_cross_prod(camera->right, camera->forward);
+    camera->up = vec_normalize(vec_cross_prod(camera->right, camera->forward));
 }
 
 t_ray   camera_ray(t_camera *camera, int pixel_x, int pixel_y)

@@ -21,3 +21,20 @@ void    render(t_data *data)
         pixel_y++;
     }
 }
+
+/*void    render(t_data *data)
+{
+    int x = 100;
+    int y = 100;
+
+    while (y < 400)
+    {
+        x = 100;
+        while (x < 400)
+        {
+            put_pixel(data->scene->window->img, x, y, 0xFFFFFF);
+            x++;
+        }
+        y++;
+    }
+}*/

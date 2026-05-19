@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 00:16:12 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/18 18:19:52 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/19 15:23:00 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,6 +204,7 @@ int                     get_color_from_str(char *color_str, t_color *color);
 
 void	setup_camera(t_camera *camera);
 t_ray	camera_ray(t_camera *camera, int pixel_x, int pixel_y);
+t_vec  get_normal(t_object *object, t_point hit_point);
 t_color	trace_ray(t_data *data, t_ray ray);
 int		intersect_sphere(void *data, t_ray ray, double *t);
 int		intersect_object(t_object *object, t_ray ray, double *t);

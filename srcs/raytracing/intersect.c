@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/18 16:47:15 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/18 16:47:45 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/19 16:10:01 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 int intersect_object(t_object *object, t_ray ray, double *t)
 {
+    if (!object || !object->data)
+        return (0);
     if (object->type == SPHERE)
         return (intersect_sphere((t_sphere *)object->data, ray, t));
     /*else if (object->type == PLANE)
