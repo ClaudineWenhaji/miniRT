@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 14:06:09 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/20 16:09:51 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/20 17:38:44 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ t_vec	vec_normalize(t_vec v)
 	double	norm;
 
 	norm = vec_length(v);
-	if (norm < 1e-9)
+	if (fabs(norm) < EPSILON)
 		return ((t_vec){0,0,0});
 	norm = 1.0 / norm;
 	v.x = v.x * norm;

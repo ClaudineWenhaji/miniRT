@@ -33,7 +33,7 @@ void    render(t_scene *scene)
                 tmp_obj = tmp_obj->next;
             }
             put_pixel(scene->window->img, pixel_x, pixel_y,
-            ray_color(scene, closest_obj, ray, closest_t));
+                ray_color(scene, closest_obj, ray, closest_t));
             pixel_x++;
         }
         pixel_y++;

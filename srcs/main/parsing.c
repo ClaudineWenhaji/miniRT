@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 17:23:21 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/19 02:48:58 by vnaoussi         ###   ########.fr       */
+/*   Updated: 2026/05/20 18:01:54 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ static int split_and_get_scene(char *line, t_scene *scene)
 
 	split_line = ft_split(line, ' ');
 	if (!split_line)
-		return (perror("split:"), 0);
+		return (perror("Error\nsplit:"), 0);
 	if (ft_strcmp(split_line[0], "A") == 0
 			|| ft_strcmp(split_line[0], "L") == 0)
 		result = get_light(split_line, &scene->lights);
@@ -67,7 +67,7 @@ static int split_and_get_scene(char *line, t_scene *scene)
 			|| ft_strcmp(split_line[0], "co") == 0)
 		result = get_objects(split_line, &scene->objects);
 	else
-		return (ft_free_table((void **)split_line, -1), printf("Error\n"), 0);
+		return (ft_free_table((void **)split_line, -1), printf("Error\nInvalid identifier"), 0);
 	return (ft_free_table((void **)split_line, -1), result);
 }
 
@@ -80,7 +80,7 @@ int	parsing(char *file, t_scene *scene)
 
 	fd = open(file, O_RDONLY);
 	if (fd == -1)
-		return (printf("Error\n"), 0);
+		return (printf("Error\nfile doesn't exit"), 0);
 	line = get_next_line(fd);
 	while (line)
 	{

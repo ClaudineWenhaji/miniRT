@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 00:19:44 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/20 14:24:49 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/20 18:30:30 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,18 +46,19 @@ static int	inits(t_scene *scene, char *name)
 {
 	scene->window = (t_win *)malloc(sizeof(t_win));
 	if (!scene->window)
-		return (printf("Error\n"), 0);
+		return (printf("Error\nMalloc window failed"), 0);
 	scene->window->mlx = mlx_init();
 	if (!scene->window->mlx)
-		return (printf("Error\n"), 0);
-	scene->window->img = NULL;
-	if (!init_img_with_color(scene->window->mlx, &scene->window->img,
-				0))
-		return (printf("Error\n"), 0);
+		return (printf("Error\nMlx init failed"), 0);
 	scene->window->win = mlx_new_window(scene->window->mlx, WINDOWS_WIDTH,
 			WINDOWS_HEIGHT, name);
 	if (!scene->window->win)
-		return (printf("Error\n"), 0);
+		return (printf("Error\nWindow creation failed"), 0);
+	scene->window->img = NULL;
+	if (!init_img_with_color(scene->window->mlx, &scene->window->img,
+				0))
+		return (printf("Error\nImage init failed"), 0);
+	
 	if (!parsing(name, scene))
 		return (0);
 	print_scene_info(scene);
@@ -73,7 +74,7 @@ int	main(int argc, char **argv)
 		return (printf("Usage: ./minirt <SCENE.rt>\n"), 1);
 	scene = (t_scene *)malloc(sizeof(t_scene));
 	if (!scene)
-		return (printf("Error\n"), 1);
+		return (printf("Error\nMalloc scene failed"), 1);
 	scene->objects = NULL;
 	scene->lights = NULL;
 	if (!inits(scene, argv[1]))

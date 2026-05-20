@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 00:16:12 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/20 16:28:19 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/20 17:12:03 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,15 +76,9 @@ typedef struct	s_camera
 	t_vec		direction;
 	double		focal_length;
 	double		fov;
-
-// ces 3 vecteurs definissent les directions vers lesquelles
-// regarde la camera et forment une base orthonormee
-
-// ray.dir = forward + u*right + v*up pour chaque pixel du rayon
-
-	t_vec		forward; // direction dans la scene
-	t_vec		right;   // direction vers la droite de la camera
-	t_vec		up;		 // direction vers le haut
+	t_vec		forward;
+	t_vec		right;
+	t_vec		up;
 } t_camera;
 
 typedef enum	e_type

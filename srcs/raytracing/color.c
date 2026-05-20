@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/18 16:35:02 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/20 16:49:28 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/20 17:19:27 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,26 @@ static int color_to_int(t_color color)
     b = ft_clamp((int)color.blue, 0, 255);
     return ((r << 16) | (g << 8) | b);
 }
+
+/*t_vec   get_normal(void *obj, t_point hit_point)
+{
+    t_color obj_color;
+    
+    if (*(t_type *)obj == SPHERE)
+    {
+        vec_normalize(vec_sub(hit_point, ((t_sphere *)obj)->center));
+        obj_color = ((t_sphere *)obj)->color;
+    }
+    else if (*(t_type *)obj == PLANE)
+    {
+        norm = vec_normalize(((t_plane *)obj)->normal);
+        if (vec_dot(norm, ray.direction) > 0)
+            normal = vec_mult(normal, -1); // evite un eclairage inverse si le rayon touche le dos du plan
+        obj_color = ((t_plane *)obj)->color;
+    }
+    else
+        normal = vector(0, 1, 0); // Default safe value
+}*/
 
 int ray_color(t_scene *scene, void *obj, t_ray ray, double t)
 {
