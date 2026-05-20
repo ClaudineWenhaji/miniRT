@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/18 16:35:02 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/20 14:34:39 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/20 16:49:28 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ static int color_to_int(t_color color)
     return ((r << 16) | (g << 8) | b);
 }
 
-
 int ray_color(t_scene *scene, void *obj, t_ray ray, double t)
 {
     t_vec   hit_point;
@@ -41,6 +40,7 @@ int ray_color(t_scene *scene, void *obj, t_ray ray, double t)
     t_vec   light_dir;
     double  intensity;
     t_color final_color;
+    t_color obj_color;
     t_list  *light_node;
     double  a;
     t_color sky;
@@ -56,7 +56,17 @@ int ray_color(t_scene *scene, void *obj, t_ray ray, double t)
     intensity = 0.0;
     hit_point = vec_add(ray.origin, vec_mult(ray.direction, t));
     if (*(t_type *)obj == SPHERE)
+    {
         normal = vec_normalize(vec_sub(hit_point, ((t_sphere *)obj)->center));
+        obj_color = ((t_sphere *)obj)->color;
+    }
+    else if (*(t_type *)obj == PLANE)
+    {
+        normal = vec_normalize(((t_plane *)obj)->normal);
+        if (vec_dot(normal, ray.direction) > 0)
+            normal = vec_mult(normal, -1); // evite un eclairage inverse si le rayon touche le dos du plan
+        obj_color = ((t_plane *)obj)->color;
+    }
     else
         normal = vector(0, 1, 0); // Default safe value
     light_node = scene->lights;
@@ -77,15 +87,12 @@ int ray_color(t_scene *scene, void *obj, t_ray ray, double t)
     }
     if (intensity > 1.0)
         intensity = 1.0;
-    final_color.red = ((t_sphere *)obj)->color.red * intensity;
-    final_color.green = ((t_sphere *)obj)->color.green * intensity;
-    final_color.blue = ((t_sphere *)obj)->color.blue * intensity;
+    final_color.red = obj_color.red * intensity;
+    final_color.green = obj_color.green * intensity;
+    final_color.blue = obj_color.blue * intensity;
     return (color_to_int(final_color));
 }
 
-// ecrire un pixel de couleur donnee dans une image, a la position x,y
-// on manipule les memoires graphiques donc char * pour avancer de 1 octet
-// int * permet d'avancer de 4 octets (32 bits)
 void put_pixel(t_img *img, int x, int y, int color)
 {
     char    *dest;

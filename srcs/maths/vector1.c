@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 14:06:09 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/18 23:20:21 by vnaoussi         ###   ########.fr       */
+/*   Updated: 2026/05/20 16:09:51 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ t_vec	vec_inv(t_vec v)
 
 t_vec	vec_div(t_vec v, double k)
 {
-	if (fabs(k) < 1e-9)
+	if (fabs(k) < EPSILON)
 		return ((t_vec){0,0,0});
 	v.x = v.x / k;
 	v.y = v.y / k;

@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 00:16:12 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/20 14:31:17 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/20 16:28:19 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,8 +202,11 @@ int         get_color_from_str(char *color_str, t_color *color);
 int			setup_camera(char **split_line, t_camera *camera);
 void		setup_viewport(t_camera *camera, t_viewport *viewport, t_img *img);
 t_ray		camera_ray(t_camera *camera, t_viewport *viewport, int pixel_x, int pixel_y);
+
 int			intersect_sphere(t_sphere *sphere, t_ray *ray, double *t);
+int			intersect_plane(t_plane *plane, t_ray *ray, double *t);
 int			intersect_object(void *object, t_ray *ray, double *t);
+
 int			ray_color(t_scene *scene, void *obj, t_ray ray, double t);
 void		put_pixel(t_img *img, int x, int y, int color);
 void		render(t_scene *scene);
