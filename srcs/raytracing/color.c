@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/18 16:35:02 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/20 17:19:27 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/20 19:53:08 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,25 +33,27 @@ static int color_to_int(t_color color)
     return ((r << 16) | (g << 8) | b);
 }
 
-/*t_vec   get_normal(void *obj, t_point hit_point)
+static t_vec	get_normal(void *obj, t_ray ray, t_vec hit_point, t_color *obj_color)
 {
-    t_color obj_color;
-    
-    if (*(t_type *)obj == SPHERE)
-    {
-        vec_normalize(vec_sub(hit_point, ((t_sphere *)obj)->center));
-        obj_color = ((t_sphere *)obj)->color;
-    }
-    else if (*(t_type *)obj == PLANE)
-    {
-        norm = vec_normalize(((t_plane *)obj)->normal);
-        if (vec_dot(norm, ray.direction) > 0)
-            normal = vec_mult(normal, -1); // evite un eclairage inverse si le rayon touche le dos du plan
-        obj_color = ((t_plane *)obj)->color;
-    }
-    else
-        normal = vector(0, 1, 0); // Default safe value
-}*/
+	t_vec	normal;
+
+	if (*(t_type *)obj == SPHERE)
+	{
+		normal = vec_normalize(
+				vec_sub(hit_point, ((t_sphere *)obj)->center));
+		*obj_color = ((t_sphere *)obj)->color;
+	}
+	else if (*(t_type *)obj == PLANE)
+	{
+		normal = vec_normalize(((t_plane *)obj)->normal);
+		if (vec_dot(normal, ray.direction) > 0)
+			normal = vec_mult(normal, -1);
+		*obj_color = ((t_plane *)obj)->color;
+	}
+	else
+		normal = vector(0, 1, 0); // Default safe value
+	return (normal);
+}
 
 int ray_color(t_scene *scene, void *obj, t_ray ray, double t)
 {
@@ -64,6 +66,7 @@ int ray_color(t_scene *scene, void *obj, t_ray ray, double t)
     t_list  *light_node;
     double  a;
     t_color sky;
+    //t_ray   reflected_ray;
 
     if (!obj)
     {
@@ -75,20 +78,12 @@ int ray_color(t_scene *scene, void *obj, t_ray ray, double t)
     }
     intensity = 0.0;
     hit_point = vec_add(ray.origin, vec_mult(ray.direction, t));
-    if (*(t_type *)obj == SPHERE)
-    {
-        normal = vec_normalize(vec_sub(hit_point, ((t_sphere *)obj)->center));
-        obj_color = ((t_sphere *)obj)->color;
-    }
-    else if (*(t_type *)obj == PLANE)
-    {
-        normal = vec_normalize(((t_plane *)obj)->normal);
-        if (vec_dot(normal, ray.direction) > 0)
-            normal = vec_mult(normal, -1); // evite un eclairage inverse si le rayon touche le dos du plan
-        obj_color = ((t_plane *)obj)->color;
-    }
-    else
-        normal = vector(0, 1, 0); // Default safe value
+    normal = get_normal(obj, ray, hit_point, &obj_color);
+
+    //reflected_ray.origin = hit_point;
+    //reflected_ray.origin = vec_add(hit_point, vec_mult(normal, EPSILON)); // eviter l'acne surface
+    //reflected_ray.direction = vec_normalize(vec_reflection(ray.direction, normal));
+    
     light_node = scene->lights;
     while (light_node)
     {
@@ -99,7 +94,9 @@ int ray_color(t_scene *scene, void *obj, t_ray ray, double t)
         {
             t_light *l = (t_light *)light_node->content;
             light_dir = vec_normalize(vec_sub(l->pos, hit_point));
+            //light_dir = vec_normalize(vec_sub(l->pos, reflected_ray.origin));
             double diffuse = vec_dot(normal, light_dir);
+            //double diffuse = vec_dot(reflected_ray.direction, light_dir);
             if (diffuse > 0)
                 intensity += diffuse * l->brightness;
         }

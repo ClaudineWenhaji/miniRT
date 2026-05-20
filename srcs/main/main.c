@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 00:19:44 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/20 18:30:30 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/20 18:41:08 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,20 @@ static int	inits(t_scene *scene, char *name)
 	return (1);
 }
 
+static int	close_window(t_scene *scene)
+{
+	ft_clean(&scene);
+	exit (0);
+	return (0);
+}
+
+static int	key_hook(int keycode, t_scene *scene)
+{
+	if (keycode == KEY_ESC)
+		close_window(scene);
+	return (0);
+}
+
 int	main(int argc, char **argv)
 {
 	t_scene	*scene;
@@ -82,6 +96,8 @@ int	main(int argc, char **argv)
 	render(scene);
 	mlx_put_image_to_window(scene->window->mlx, scene->window->win,
 			scene->window->img->img_ptr, 0, 0);
+	mlx_key_hook(scene->window->win, key_hook, scene);
+	mlx_hook(scene->window->win, 17, 0, close_window, scene);
 	mlx_loop(scene->window->mlx);
 	return (ft_clean(&scene), 0);
 }

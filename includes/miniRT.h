@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 00:16:12 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/20 17:12:03 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/20 19:36:38 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,7 @@ typedef struct	s_material
 	double	ambient;
 	double	diffuse;
 	double	specular;
-	double	reflection;
+	double	reflectivity;
 	double	refraction;
 }	t_material;
 
