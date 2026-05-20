@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 17:23:21 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/18 18:41:06 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/19 02:48:58 by vnaoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ static int split_and_get_scene(char *line, t_scene *scene)
 			|| ft_strcmp(split_line[0], "L") == 0)
 		result = get_light(split_line, &scene->lights);
 	else if (ft_strcmp(split_line[0], "C") == 0)
-		result = get_camera(split_line, &scene->camera);
+		result = setup_camera(split_line, &scene->camera);
 	else if (ft_strcmp(split_line[0], "pl") == 0
 			|| ft_strcmp(split_line[0], "sp") == 0
 			|| ft_strcmp(split_line[0], "cy") == 0

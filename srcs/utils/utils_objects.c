@@ -22,6 +22,7 @@ t_sphere *get_sphere(char **split_line)
 	sphere->identifier = SPHERE;
 	get_vector_from_str(split_line[1], &(sphere->center));
 	sphere->diameter = ft_atod(split_line[2]);
+	sphere->radius = sphere->diameter / 2.0;
 	get_color_from_str(split_line[3], &(sphere->color));
 	return (sphere);
 }
@@ -51,6 +52,7 @@ t_cylinder	*get_cylinder(char **split_line)
 	get_vector_from_str(split_line[1], &(cylinder->center));
 	get_vector_from_str(split_line[2], &(cylinder->axis));
 	cylinder->diameter = ft_atod(split_line[3]);
+	cylinder->radius = cylinder->diameter / 2.0;
 	cylinder->height = ft_atod(split_line[4]);
 	get_color_from_str(split_line[5], &(cylinder->color));
 	return (cylinder);

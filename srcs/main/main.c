@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 00:19:44 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/19 16:08:03 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/20 14:24:49 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,19 @@ static int	init_img_with_color(void *mlx, t_img **img, char bytes)
 		img_tmp = (t_img *)malloc(sizeof(t_img));
 		if (!img_tmp)
 			return (0);
-		img_tmp->img_ptr = mlx_new_image(mlx, WINDOWS_WIDTH, WINDOWS_HEIGHT);
+		img_tmp->aspect_ratio = 16.0 / 9.0;
+		img_tmp->image_width = WINDOWS_WIDTH; // Change for different width
+		img_tmp->image_height = (int)((double)img_tmp->image_width / img_tmp->aspect_ratio);
+		if (img_tmp->image_height < 1)
+			img_tmp->image_height = 1;
+		img_tmp->img_ptr = mlx_new_image(mlx, img_tmp->image_width, img_tmp->image_height);
 		if (!img_tmp->img_ptr)
 			return (free(img_tmp), 0);
 		img_tmp->data = mlx_get_data_addr(img_tmp->img_ptr,
 				&(img_tmp->bit_per_pixel), &(img_tmp->size_line),
 				&(img_tmp->endian));
 	}
-	total_bytes = WINDOWS_HEIGHT * img_tmp->size_line;
+	total_bytes = img_tmp->image_height * img_tmp->size_line;
 	ft_memset(img_tmp->data, bytes, total_bytes);
 	*img = img_tmp;
 	return (1);
@@ -55,13 +60,14 @@ static int	inits(t_scene *scene, char *name)
 		return (printf("Error\n"), 0);
 	if (!parsing(name, scene))
 		return (0);
+	print_scene_info(scene);
+	setup_viewport(&scene->camera, &scene->viewport, scene->window->img);
 	return (1);
 }
 
 int	main(int argc, char **argv)
 {
 	t_scene	*scene;
-	t_data	data;
 
 	if (argc != 2)
 		return (printf("Usage: ./minirt <SCENE.rt>\n"), 1);
@@ -72,10 +78,7 @@ int	main(int argc, char **argv)
 	scene->lights = NULL;
 	if (!inits(scene, argv[1]))
 		return (ft_clean(&scene), 1);
-	data.scene = scene;
-	data.camera = scene->camera;
-	setup_camera(&data.camera);
-	render(&data);
+	render(scene);
 	mlx_put_image_to_window(scene->window->mlx, scene->window->win,
 			scene->window->img->img_ptr, 0, 0);
 	mlx_loop(scene->window->mlx);

@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/14 02:23:45 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/18 16:30:37 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/19 00:34:08 by vnaoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,9 @@
 
 typedef struct s_img
 {
+	double	aspect_ratio;
+	int		image_width;
+	int		image_height;
 	void	*img_ptr;
 	char	*data;
 	int		bit_per_pixel;
