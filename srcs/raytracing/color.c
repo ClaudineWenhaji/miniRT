@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/18 16:35:02 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/20 19:53:08 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/21 14:28:19 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static int color_to_int(t_color color)
     return ((r << 16) | (g << 8) | b);
 }
 
-static t_vec	get_normal(void *obj, t_ray ray, t_vec hit_point, t_color *obj_color)
+static t_vec	get_normal(void *obj, t_vec hit_point, t_color *obj_color)
 {
 	t_vec	normal;
 
@@ -41,15 +41,25 @@ static t_vec	get_normal(void *obj, t_ray ray, t_vec hit_point, t_color *obj_colo
 	{
 		normal = vec_normalize(
 				vec_sub(hit_point, ((t_sphere *)obj)->center));
+       
 		*obj_color = ((t_sphere *)obj)->color;
 	}
 	else if (*(t_type *)obj == PLANE)
 	{
 		normal = vec_normalize(((t_plane *)obj)->normal);
-		if (vec_dot(normal, ray.direction) > 0)
-			normal = vec_mult(normal, -1);
 		*obj_color = ((t_plane *)obj)->color;
 	}
+    else if (*(t_type *)obj == CONE)
+    {
+        t_vec  pc = vec_sub(hit_point, ((t_cone *)obj)->apex);
+        double m = vec_dot(pc, ((t_cone *)obj)->axis);
+        double  correction = 1.0 + (tan(((t_cone *)obj)->angle)
+            * (tan(((t_cone *)obj)->angle)));
+        
+        normal = vec_normalize(
+                    vec_sub(pc , vec_mult(((t_cone *)obj)->axis, m * correction)));
+        *obj_color = ((t_cone *)obj)->color;
+    }
 	else
 		normal = vector(0, 1, 0); // Default safe value
 	return (normal);
@@ -78,8 +88,9 @@ int ray_color(t_scene *scene, void *obj, t_ray ray, double t)
     }
     intensity = 0.0;
     hit_point = vec_add(ray.origin, vec_mult(ray.direction, t));
-    normal = get_normal(obj, ray, hit_point, &obj_color);
-
+    normal = get_normal(obj, hit_point, &obj_color);
+    if (vec_dot(normal, ray.direction) > 0)
+			normal = vec_mult(normal, -1);
     //reflected_ray.origin = hit_point;
     //reflected_ray.origin = vec_add(hit_point, vec_mult(normal, EPSILON)); // eviter l'acne surface
     //reflected_ray.direction = vec_normalize(vec_reflection(ray.direction, normal));

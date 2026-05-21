@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_objects.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vnaoussi <vnaoussi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:34:08 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/14 01:10:32 by vnaoussi         ###   ########.fr       */
+/*   Updated: 2026/05/21 14:40:52 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,21 @@ t_cylinder	*get_cylinder(char **split_line)
 	cylinder->height = ft_atod(split_line[4]);
 	get_color_from_str(split_line[5], &(cylinder->color));
 	return (cylinder);
+}
+
+t_cone	*get_cone(char **split_line)
+{
+	t_cone	*cone;
+
+	cone = (t_cone *)malloc(sizeof(t_cone));
+	if (!cone)
+		return (NULL);
+	cone->identifier = CONE;
+	get_vector_from_str(split_line[1], &(cone->apex));
+	get_vector_from_str(split_line[2], &(cone->axis));
+	cone->angle = ft_atod(split_line[3]) * PI / 180.0;
+	cone->height = ft_atod(split_line[4]);
+	get_color_from_str(split_line[5], &(cone->color));
+	return (cone);
+		
 }

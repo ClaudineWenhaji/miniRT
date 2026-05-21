@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 00:16:12 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/20 19:36:38 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/21 14:37:39 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ typedef struct s_cone
 	t_type	identifier;
 	t_point	apex;
 	t_vec	axis;
-	double	radius;
+	double	angle;
 	double	height;
 	t_color	color;
 }	t_cone;
@@ -190,6 +190,7 @@ t_light     *get_normal_light(char **line);
 t_sphere    *get_sphere(char **line);
 t_plane     *get_plane(char **line);
 t_cylinder	*get_cylinder(char **line);
+t_cone		*get_cone(char **split_line);
 int			get_vector_from_str(char *vector_str, t_vec *vectors);
 int         get_color_from_str(char *color_str, t_color *color);
 
@@ -199,6 +200,7 @@ t_ray		camera_ray(t_camera *camera, t_viewport *viewport, int pixel_x, int pixel
 
 int			intersect_sphere(t_sphere *sphere, t_ray *ray, double *t);
 int			intersect_plane(t_plane *plane, t_ray *ray, double *t);
+int			intersect_cone(t_cone *cone, t_ray *ray, double *t);
 int			intersect_object(void *object, t_ray *ray, double *t);
 
 int			ray_color(t_scene *scene, void *obj, t_ray ray, double t);
