@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 00:16:12 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/21 14:37:39 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/21 16:03:19 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ typedef struct	s_sphere
 	double	radius;
 	double	diameter;
 	t_color	color;
+	double	reflectivity;
 }	t_sphere;
 
 typedef struct	s_plane

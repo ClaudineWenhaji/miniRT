@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/18 16:35:02 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/21 14:28:19 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/21 16:17:12 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,8 @@ static t_vec	get_normal(void *obj, t_vec hit_point, t_color *obj_color)
     {
         t_vec  pc = vec_sub(hit_point, ((t_cone *)obj)->apex);
         double m = vec_dot(pc, ((t_cone *)obj)->axis);
-        double  correction = 1.0 + (tan(((t_cone *)obj)->angle)
-            * (tan(((t_cone *)obj)->angle)));
+        double  correction = 1.0 + (tan(((t_cone *)obj)->angle * PI / 180.0)
+            * (tan(((t_cone *)obj)->angle * PI / 180.0)));
         
         normal = vec_normalize(
                     vec_sub(pc , vec_mult(((t_cone *)obj)->axis, m * correction)));
@@ -77,6 +77,7 @@ int ray_color(t_scene *scene, void *obj, t_ray ray, double t)
     double  a;
     t_color sky;
     //t_ray   reflected_ray;
+    //t_vec   reflected_dir;
 
     if (!obj)
     {
@@ -91,9 +92,10 @@ int ray_color(t_scene *scene, void *obj, t_ray ray, double t)
     normal = get_normal(obj, hit_point, &obj_color);
     if (vec_dot(normal, ray.direction) > 0)
 			normal = vec_mult(normal, -1);
-    //reflected_ray.origin = hit_point;
-    //reflected_ray.origin = vec_add(hit_point, vec_mult(normal, EPSILON)); // eviter l'acne surface
-    //reflected_ray.direction = vec_normalize(vec_reflection(ray.direction, normal));
+    
+    //reflected_dir = vec_reflection(ray.direction, normal);
+    //reflected_ray.origin = vec_add(hit_point, vec_mult(normal, EPSILON));
+    //reflected_ray.direction = vec_normalize(reflected_dir);
     
     light_node = scene->lights;
     while (light_node)

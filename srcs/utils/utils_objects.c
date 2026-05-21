@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:34:08 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/21 14:40:52 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/21 15:22:23 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ t_cone	*get_cone(char **split_line)
 	cone->identifier = CONE;
 	get_vector_from_str(split_line[1], &(cone->apex));
 	get_vector_from_str(split_line[2], &(cone->axis));
-	cone->angle = ft_atod(split_line[3]) * PI / 180.0;
+	cone->angle = ft_atod(split_line[3]);// * PI / 180.0;
 	cone->height = ft_atod(split_line[4]);
 	get_color_from_str(split_line[5], &(cone->color));
 	return (cone);

@@ -34,8 +34,38 @@ void    render(t_scene *scene)
             }
             put_pixel(scene->window->img, pixel_x, pixel_y,
                 ray_color(scene, closest_obj, ray, closest_t));
+            /*if (closest_obj)
+                 put_pixel(scene->window->img, pixel_x, pixel_y,
+                    ray_color(scene, closest_obj, ray, closest_t));
+            else
+                put_pixel(scene->window->img, pixel_x, pixel_y,
+                    ray_color(scene, NULL, ray, 0));*/
             pixel_x++;
         }
         pixel_y++;
     }
 }
+
+
+/*int trace_ray(t_scene *scene, t_ray ray, int depth)
+{
+    void    *closest_obj = NULL;
+    double  closest_t = INFINITY;
+    t_list  *obj_node = scene->objects;
+
+    while (obj_node)
+    {
+        void *obj = obj_node->content;
+        double t;
+        if (intersect_object(obj, &ray, &t) && t < closest_t && t > EPSILON)
+        {
+            closest_t = t;
+            closest_obj = obj;
+        }
+        obj_node = obj_node->next;
+    }
+    if (closest_obj)
+        return (ray_color(scene, closest_obj, ray, closest_t));
+    else
+        return (ray_color(scene, NULL, ray, 0));
+}*/

@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/18 16:47:15 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/21 13:15:35 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/21 15:24:51 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ int intersect_cone(t_cone *cone, t_ray *ray, double *t)
     double  xv;
      
     oc = vec_sub(ray->origin, cone->apex);
-    cosine = cos(cone->angle);
+    cosine = cos(cone->angle * PI / 180.0);
     dv = vec_dot(ray->direction, cone->axis);
     xv = vec_dot(oc, cone->axis);
     

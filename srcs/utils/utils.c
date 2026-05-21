@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vnaoussi <vnaoussi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:13:31 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/19 01:37:51 by vnaoussi         ###   ########.fr       */
+/*   Updated: 2026/05/21 15:19:17 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,6 +150,15 @@ void	print_scene_info(t_scene *scene)
 			print_vec("Axis", cy->axis);
 			printf("  Diameter: %f, Height: %f\n", cy->diameter, cy->height);
 			print_color(cy->color);
+		}
+		else if (type == CONE)
+		{
+			t_cone *co = (t_cone *)tmp->content;
+			printf("Cone:\n");
+			print_vec("Apex", co->apex);
+			print_vec("Axis", co->axis);
+			printf("  Angle: %f, Height: %f\n", co->angle, co->height);
+			print_color(co->color);
 		}
 		tmp = tmp->next;
 	}
