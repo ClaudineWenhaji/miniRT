@@ -6,13 +6,13 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:34:08 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/21 15:22:23 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/22 18:50:56 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "miniRT.h"
 
-t_sphere *get_sphere(char **split_line)
+t_sphere	*get_sphere(char **split_line)
 {
 	t_sphere	*sphere;
 
@@ -37,6 +37,7 @@ t_plane	*get_plane(char **split_line)
 	plane->identifier = PLANE;
 	get_vector_from_str(split_line[1], &(plane->point));
 	get_vector_from_str(split_line[2], &(plane->normal));
+	plane->normal = vec_normalize(plane->normal);
 	get_color_from_str(split_line[3], &(plane->color));
 	return (plane);
 }
@@ -51,6 +52,7 @@ t_cylinder	*get_cylinder(char **split_line)
 	cylinder->identifier = CYLINDER;
 	get_vector_from_str(split_line[1], &(cylinder->center));
 	get_vector_from_str(split_line[2], &(cylinder->axis));
+	cylinder->axis = vec_normalize(cylinder->axis);
 	cylinder->diameter = ft_atod(split_line[3]);
 	cylinder->radius = cylinder->diameter / 2.0;
 	cylinder->height = ft_atod(split_line[4]);
@@ -68,9 +70,8 @@ t_cone	*get_cone(char **split_line)
 	cone->identifier = CONE;
 	get_vector_from_str(split_line[1], &(cone->apex));
 	get_vector_from_str(split_line[2], &(cone->axis));
-	cone->angle = ft_atod(split_line[3]);// * PI / 180.0;
+	cone->angle = ft_atod(split_line[3]);
 	cone->height = ft_atod(split_line[4]);
 	get_color_from_str(split_line[5], &(cone->color));
 	return (cone);
-		
 }

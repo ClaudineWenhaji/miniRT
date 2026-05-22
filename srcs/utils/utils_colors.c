@@ -6,13 +6,13 @@
 /*   By: vnaoussi <vnaoussi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 18:44:16 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/14 02:06:30 by vnaoussi         ###   ########.fr       */
+/*   Updated: 2026/05/22 18:49:47 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "miniRT.h"
 
-int get_color_from_str(char *color_str, t_color *color)
+int	get_color_from_str(char *color_str, t_color *color)
 {
 	char	**tmp;
 

@@ -6,14 +6,14 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/14 02:23:45 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/19 00:34:08 by vnaoussi         ###   ########.fr       */
+/*   Updated: 2026/05/22 16:52:08 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef WINDOWS_H
-#define WINDOWS_H
+# define WINDOWS_H
 
-#include "../minilibx-linux/mlx.h"
+# include "../minilibx-linux/mlx.h"
 
 # define WINDOWS_WIDTH 1920
 # define WINDOWS_HEIGHT 1080

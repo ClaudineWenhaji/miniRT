@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:13:31 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/21 15:19:17 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/22 18:49:19 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ void	clean_window(t_win *window)
 	}
 	free(window);
 }
-
 
 void	ft_clean(t_scene **scene)
 {

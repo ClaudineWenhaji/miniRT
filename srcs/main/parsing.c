@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 17:23:21 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/21 14:38:45 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/22 17:08:45 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static int	get_objects(char **split_line, t_list **objects)
 	return (ft_lstadd_back(objects, node), 1);
 }
 
-static int split_and_get_scene(char *line, t_scene *scene)
+static int	split_and_get_scene(char *line, t_scene *scene)
 {
 	char	**split_line;
 	int		result;
@@ -59,17 +59,18 @@ static int split_and_get_scene(char *line, t_scene *scene)
 	if (!split_line)
 		return (perror("Error\nsplit:"), 0);
 	if (ft_strcmp(split_line[0], "A") == 0
-			|| ft_strcmp(split_line[0], "L") == 0)
+		|| ft_strcmp(split_line[0], "L") == 0)
 		result = get_light(split_line, &scene->lights);
 	else if (ft_strcmp(split_line[0], "C") == 0)
 		result = setup_camera(split_line, &scene->camera);
 	else if (ft_strcmp(split_line[0], "pl") == 0
-			|| ft_strcmp(split_line[0], "sp") == 0
-			|| ft_strcmp(split_line[0], "cy") == 0
-			|| ft_strcmp(split_line[0], "co") == 0)
+		|| ft_strcmp(split_line[0], "sp") == 0
+		|| ft_strcmp(split_line[0], "cy") == 0
+		|| ft_strcmp(split_line[0], "co") == 0)
 		result = get_objects(split_line, &scene->objects);
 	else
-		return (ft_free_table((void **)split_line, -1), printf("Error\nInvalid identifier"), 0);
+		return (ft_free_table((void **)split_line, -1),
+			printf("Error\nInvalid identifier"), 0);
 	return (ft_free_table((void **)split_line, -1), result);
 }
 
@@ -79,7 +80,6 @@ int	parsing(char *file, t_scene *scene)
 	char	*line;
 	int		i;
 
-
 	fd = open(file, O_RDONLY);
 	if (fd == -1)
 		return (printf("Error\nfile doesn't exit"), 0);
@@ -88,7 +88,7 @@ int	parsing(char *file, t_scene *scene)
 	{
 		i = 0;
 		while (line[i] && (line[i] == ' ' || line[i] == '\t'
-					|| line[i] == '\n'))
+				|| line[i] == '\n'))
 			i++;
 		if (line[i])
 			if (!split_and_get_scene(line, scene))
