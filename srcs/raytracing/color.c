@@ -6,13 +6,13 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/18 16:35:02 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/22 18:47:42 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/26 01:18:46 by vnaoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "miniRT.h"
-
-static int	ft_clamp(int value, int min, int max)
+/*
+staticint	ft_clamp(int value, int min, int max)
 {
 	if (value < min)
 		return (min);
@@ -41,12 +41,12 @@ static t_vec	get_normal(void *obj, t_vec hit_point, t_color *obj_color)
 	{
 		normal = vec_normalize(
 				vec_sub(hit_point, ((t_sphere *)obj)->center));
-		*obj_color = ((t_sphere *)obj)->color;
+		*obj_color = ((t_sphere *)obj)->material.color;
 	}
 	else if (*(t_type *)obj == PLANE)
 	{
 		normal = vec_normalize(((t_plane *)obj)->normal);
-		*obj_color = ((t_plane *)obj)->color;
+		*obj_color = ((t_plane *)obj)->material.color;
 	}
 	else if (*(t_type *)obj == CYLINDER)
 	{
@@ -123,4 +123,4 @@ void	put_pixel(t_img *img, int x, int y, int color)
 		+ (y * img->size_line)
 		+ (x * (img->bit_per_pixel / 8));
 	*(unsigned int *)dest = color;
-}
+}*/

@@ -1,30 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_vectors.c                                    :+:      :+:    :+:   */
+/*   key_press_events.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vnaoussi <vnaoussi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/05/13 20:14:53 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/14 01:14:50 by vnaoussi         ###   ########.fr       */
+/*   Created: 2026/05/22 16:43:55 by vnaoussi          #+#    #+#             */
+/*   Updated: 2026/05/22 17:08:57 by vnaoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "miniRT.h"
+# include "miniRT.h"
 
-int	get_vector_from_str(char *vector_str, t_vec *vector)
+int	handle_keypress(int keysym, void *param)
 {
-	char	**tmp;
-
-	if (!vector_str)
-		return (0);
-	tmp = ft_split(vector_str, ',');
-	if (!tmp)
-		return (0);
-	if (!tmp[0] || !tmp[1] || !tmp[2])
-		return (ft_free_table((void **)tmp, -1), 0);
-	vector->x = ft_atod(tmp[0]);
-	vector->y = ft_atod(tmp[1]);
-	vector->z = ft_atod(tmp[2]);
-	return (ft_free_table((void **)tmp, -1), 1);
+	if (keysym == KEY_ESC)
+		exit_program(param);
+	return (0);
 }

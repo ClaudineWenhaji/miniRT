@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 00:16:12 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/22 16:51:24 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/26 08:43:44 by vnaoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,65 +89,55 @@ typedef enum e_type
 	CONE,
 }	t_type;
 
+typedef struct	s_material
+{
+	t_color	color;
+	double	k_diff;
+	double	k_spec;
+	double	shinness;
+	double	ior;
+	double	transparency;
+}	t_material;
+
 typedef struct s_sphere
 {
 	t_type	identifier;
 	t_point	center;
 	double	radius;
 	double	diameter;
-	t_color	color;
-	double	reflectivity;
+	t_material	material;
 }	t_sphere;
 
 typedef struct s_plane
 {
-	t_type	identifier;
-	t_point	point;
-	t_vec	normal;
-	t_color	color;
+	t_type		identifier;
+	t_point		point;
+	t_vec		normal;
+	t_material	material;
 }	t_plane;
 
 typedef struct s_cylinder
 {
-	t_type	identifier;
-	t_point	center;
-	t_vec	axis;
-	double	radius;
-	double	diameter;
-	double	height;
-	t_color	color;
+	t_type		identifier;
+	t_point		center;
+	t_vec		axis;
+	double		radius;
+	double		diameter;
+	double		height;
+	t_material	material;
 }	t_cylinder;
 
 typedef struct s_cone
 {
-	t_type	identifier;
-	t_point	apex;
-	t_vec	axis;
-	double	angle;
-	double	height;
-	t_color	color;
+	t_type		identifier;
+	t_point		apex;
+	t_vec		axis;
+	double		angle;
+	double		height;
+	t_material	material;
 }	t_cone;
 
-typedef struct s_material
-{
-	t_color	color;
-	double	ambient;
-	double	diffuse;
-	double	specular;
-	double	reflectivity;
-	double	refraction;
-}	t_material;
-
-typedef struct s_hit
-{
-	double		t;
-	t_point		point;
-	t_vec		normal;
-	t_material	*mat;
-	int			front_face;
-}	t_hit;
-
-typedef struct s_viewport
+typedef struct	s_viewport
 {
 	double	viewport_height;
 	double	viewport_width;
@@ -201,10 +191,13 @@ int			intersect_plane(t_plane *plane, t_ray *ray, double *t);
 t_vec		get_normal_cone(t_cone *cone, t_point hit_point);
 int			intersect_cone(t_cone *cone, t_ray *ray, double *t);
 int			intersect_object(void *object, t_ray *ray, double *t);
-int			ray_color(t_scene *scene, void *obj, t_ray ray, double t);
+int			ray_color(t_scene *scene, t_ray ray);
 void		put_pixel(t_img *img, int x, int y, int color);
+t_ray		camera_ray(t_camera *camera, t_viewport *viewport,
+				int pixel_x, int pixel_y);
 void		render(t_scene *scene);
 int			intersect_cylinder(t_cylinder *cylinder, t_ray *ray, double *t);
 t_vec		get_normal_cylinder(t_cylinder *cylinder, t_point hit_point);
+void		exit_program(void *param);
 
 #endif

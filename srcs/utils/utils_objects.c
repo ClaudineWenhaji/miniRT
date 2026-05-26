@@ -6,11 +6,44 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:34:08 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/22 18:50:56 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/25 14:42:15 by vnaoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "miniRT.h"
+
+static	void	get_caracteristic(char **split_line, t_material *material,
+		int start_index)
+{
+	if (!split_line[start_index])
+		return ;
+	get_color_from_str(split_line[start_index], &material->color);
+	material->k_diff = 1.0;
+	material->k_spec = 0.0;
+	material->shinness = 1.0;
+	material->ior = 1.0;
+	material->transparency = 0.0;
+	if (split_line[start_index + 1])
+	{
+		material->k_diff = ft_atod(split_line[start_index + 1]);
+		if (split_line[start_index + 2])
+		{
+			material->k_spec = ft_atod(split_line[start_index + 2]);
+			if (split_line[start_index + 3])
+			{
+				material->shinness = ft_atod(split_line[start_index + 3]);
+				if (split_line[start_index + 4])
+				{
+					material->ior = ft_atod(split_line[start_index + 4]);
+					if (split_line[start_index + 5])
+						material->transparency = ft_atod(split_line[start_index
+								+ 5]);
+				}
+			}
+		}
+	}
+}
+
 
 t_sphere	*get_sphere(char **split_line)
 {
@@ -23,7 +56,7 @@ t_sphere	*get_sphere(char **split_line)
 	get_vector_from_str(split_line[1], &(sphere->center));
 	sphere->diameter = ft_atod(split_line[2]);
 	sphere->radius = sphere->diameter / 2.0;
-	get_color_from_str(split_line[3], &(sphere->color));
+	get_caracteristic(split_line, &(sphere->material), 3);
 	return (sphere);
 }
 
@@ -38,7 +71,7 @@ t_plane	*get_plane(char **split_line)
 	get_vector_from_str(split_line[1], &(plane->point));
 	get_vector_from_str(split_line[2], &(plane->normal));
 	plane->normal = vec_normalize(plane->normal);
-	get_color_from_str(split_line[3], &(plane->color));
+	get_caracteristic(split_line, &(plane->material), 3);
 	return (plane);
 }
 
@@ -56,7 +89,7 @@ t_cylinder	*get_cylinder(char **split_line)
 	cylinder->diameter = ft_atod(split_line[3]);
 	cylinder->radius = cylinder->diameter / 2.0;
 	cylinder->height = ft_atod(split_line[4]);
-	get_color_from_str(split_line[5], &(cylinder->color));
+	get_caracteristic(split_line, &(cylinder->material), 5);
 	return (cylinder);
 }
 
@@ -72,6 +105,6 @@ t_cone	*get_cone(char **split_line)
 	get_vector_from_str(split_line[2], &(cone->axis));
 	cone->angle = ft_atod(split_line[3]);
 	cone->height = ft_atod(split_line[4]);
-	get_color_from_str(split_line[5], &(cone->color));
+	get_caracteristic(split_line, (&cone->material), 5);
 	return (cone);
 }

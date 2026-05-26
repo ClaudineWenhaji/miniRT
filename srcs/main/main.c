@@ -6,11 +6,20 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 00:19:44 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/22 17:00:03 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/25 14:38:22 by vnaoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "miniRT.h"
+
+void	exit_program(void *param)
+{
+	t_scene	*scene;
+
+	scene = (t_scene *)param;
+	ft_clean(&scene);
+	exit (0);
+}
 
 static int	init_img_with_color(void *mlx, t_img **img, char bytes)
 {
@@ -80,7 +89,9 @@ int	main(int argc, char **argv)
 		return (ft_clean(&scene), 1);
 	render(scene);
 	mlx_put_image_to_window(scene->window->mlx, scene->window->win,
-		scene->window->img->img_ptr, 0, 0);
+			scene->window->img->img_ptr, 0, 0);
+	mlx_hook(scene->window->win, 2, 1L << 0, (void *)handle_keypress, scene);
+	mlx_hook(scene->window->win, 17, 0, (void *)exit_program, scene);
 	mlx_loop(scene->window->mlx);
 	return (ft_clean(&scene), 0);
 }

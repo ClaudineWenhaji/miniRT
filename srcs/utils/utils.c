@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:13:31 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/22 18:49:19 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/25 14:40:17 by vnaoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ void	print_scene_info(t_scene *scene)
 			printf("Sphere:\n");
 			print_vec("Center", s->center);
 			printf("  Diameter: %f\n", s->diameter);
-			print_color(s->color);
+			print_color(s->material.color);
 		}
 		else if (type == PLANE)
 		{
@@ -139,7 +139,7 @@ void	print_scene_info(t_scene *scene)
 			printf("Plane:\n");
 			print_vec("Point", p->point);
 			print_vec("Normal", p->normal);
-			print_color(p->color);
+			print_color(p->material.color);
 		}
 		else if (type == CYLINDER)
 		{
@@ -148,7 +148,7 @@ void	print_scene_info(t_scene *scene)
 			print_vec("Center", cy->center);
 			print_vec("Axis", cy->axis);
 			printf("  Diameter: %f, Height: %f\n", cy->diameter, cy->height);
-			print_color(cy->color);
+			print_color(cy->material.color);
 		}
 		else if (type == CONE)
 		{
@@ -157,7 +157,7 @@ void	print_scene_info(t_scene *scene)
 			print_vec("Apex", co->apex);
 			print_vec("Axis", co->axis);
 			printf("  Angle: %f, Height: %f\n", co->angle, co->height);
-			print_color(co->color);
+			print_color(co->material.color);
 		}
 		tmp = tmp->next;
 	}

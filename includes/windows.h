@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/14 02:23:45 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/22 16:52:08 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/25 14:37:42 by vnaoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,5 +63,7 @@ typedef struct s_win
 	void	*mlx;
 	void	*win;
 }	t_win;
+
+int		handle_keypress(int keysym, void *param);
 
 #endif

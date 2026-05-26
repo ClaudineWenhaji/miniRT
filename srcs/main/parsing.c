@@ -22,6 +22,8 @@ static int	get_light(char **split_line, t_list **lights)
 		light = get_ambient_light(split_line);
 	else
 		light = get_normal_light(split_line);
+	if (!light)
+		return (0);
 	node = ft_lstnew(light);
 	if (!node)
 		return (free(light), 0);
