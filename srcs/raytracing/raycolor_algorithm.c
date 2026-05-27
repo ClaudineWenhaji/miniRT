@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raycolor_algorithm.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vnaoussi <vnaoussi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/23 18:19:47 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/26 09:29:34 by vnaoussi         ###   ########.fr       */
+/*   Updated: 2026/05/27 16:54:21 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,18 +150,19 @@ static t_color phong_model(t_scene *scene, void *obj, t_material *material,
             }
             if (shadow_factor > 0)
             {
-                diff = vec_dot(normal, light_dir);
+                diff = fmax(vec_dot(normal, light_dir), 0.0);
                 if (diff > 0)
                     res = c_add(res, c_mult(c_prod(material->color, l->color),
                             diff * l->brightness * material->k_diff
-                                * shadow_factor));
-                reflect_dir = vec_sub(ray->direction,
-                    vec_mult(normal, 2.0 * vec_dot(normal, ray->direction)));
-                spec = vec_dot(reflect_dir, light_dir);
+                                * shadow_factor));           
+                t_vec view_dir = vec_mult(ray->direction, -1.0);
+                reflect_dir = vec_sub(vec_mult(normal, 2.0 * vec_dot(normal, light_dir)), light_dir);
+                reflect_dir = vec_normalize(reflect_dir);
+                spec = fmax(vec_dot(view_dir, reflect_dir), 0.0);
                 if (spec > 0)
                     res = c_add(res, c_mult(l->color,
-                            pow(spec, material->shinness) * l->brightness
-                            * material->k_spec * shadow_factor));
+                        pow(spec, material->shinness) * l->brightness
+                        * material->k_spec * shadow_factor));
             }
         }
         light_node = light_node->next;
@@ -232,14 +233,14 @@ t_color ray_color_recursive(t_scene *scene, t_ray ray, int depth)
                     mat.ior);
             if (vec_length(re_ray.direction) > 0)
                 refraction = ray_color_recursive(scene, re_ray, depth + 1);
-            else
+            /*else
             {
                 t_vec r_dir = vec_normalize(vec_sub(ray.direction,
                     vec_mult(normal, 2.0 * vec_dot(normal, ray.direction))));
                 t_ray r_ray = {vec_add(hit_point,
                         vec_mult(normal, EPSILON * 2.0)), r_dir};
                 reflection = ray_color_recursive(scene, r_ray, depth + 1);
-            }
+            }*/
         }
         final_c = c_add(c_mult(local, (1.0 - mat.transparency)),
                         c_mult(refraction, mat.transparency));
