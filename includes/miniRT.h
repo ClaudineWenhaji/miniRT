@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 00:16:12 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/26 08:43:44 by vnaoussi         ###   ########.fr       */
+/*   Updated: 2026/05/28 14:48:38 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,10 @@ typedef struct	s_material
 	double	shinness;
 	double	ior;
 	double	transparency;
+	int		is_checkerboard;	
+	t_color checker_color1;
+	t_color checker_color2;
+	double checker_scale;
 }	t_material;
 
 typedef struct s_sphere
@@ -199,5 +203,9 @@ void		render(t_scene *scene);
 int			intersect_cylinder(t_cylinder *cylinder, t_ray *ray, double *t);
 t_vec		get_normal_cylinder(t_cylinder *cylinder, t_point hit_point);
 void		exit_program(void *param);
+t_color checker_plane(t_plane *plane, t_material *material, t_point hit_point);
+t_color checker_sphere(t_sphere *sphere, t_material *material, t_point hit_point);
+t_color checker_cylinder(t_cylinder *cylinder, t_material *material, t_point hit_point);
+t_color checker_cone(t_cone *cone, t_material *material, t_point hit_point);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/23 18:19:47 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/27 16:54:21 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/28 14:52:43 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,23 @@ static t_material get_obj_material(void *object)
         return (((t_cone *)object)->material);
     if (*(t_type *)object == PLANE)
         return (((t_plane *)object)->material);
-    return ((t_material){{0,0,0}, 1, 0, 1, 1, 0});
+    return ((t_material){{0,0,0}, 1, 0, 1, 1, 0, 1, {0,0,0}, {0,0,0}, 0});
+}
+
+static t_color get_object_color(void *object, t_point hit_point)
+{
+    t_material mat = get_obj_material(object);
+    if (!mat.is_checkerboard)
+        return (mat.color);
+    if (*(t_type *)object == PLANE)
+        return (checker_plane((t_plane *)object, &mat, hit_point));
+    if (*(t_type *)object == SPHERE)
+        return (checker_sphere((t_sphere *)object, &mat, hit_point));
+    if (*(t_type *)object == CYLINDER)
+        return (checker_cylinder((t_cylinder *)object, &mat, hit_point));
+    if (*(t_type *)object == CONE)
+        return (checker_cone((t_cone *)object, &   mat, hit_point));
+    return (mat.color);
 }
 
 static t_color phong_model(t_scene *scene, void *obj, t_material *material,
@@ -118,6 +134,7 @@ static t_color phong_model(t_scene *scene, void *obj, t_material *material,
     double  spec;
     double  t_shadow;
     void    *shadow_obj;
+    t_color  obj_color = get_object_color(obj, hit_point);
 
     if (vec_dot(normal, ray->direction) > 0)
         normal = vec_mult(normal, -1.0);
@@ -126,7 +143,7 @@ static t_color phong_model(t_scene *scene, void *obj, t_material *material,
         if (*(t_type_light *)light_node->content == AMBIENT)
         {
             t_ambient *amb = (t_ambient *)light_node->content;
-            res = c_add(res, c_mult(c_prod(material->color, amb->color),
+            res = c_add(res, c_mult(c_prod(obj_color, amb->color),
                         amb->ratio));
         }
         else
@@ -152,7 +169,7 @@ static t_color phong_model(t_scene *scene, void *obj, t_material *material,
             {
                 diff = fmax(vec_dot(normal, light_dir), 0.0);
                 if (diff > 0)
-                    res = c_add(res, c_mult(c_prod(material->color, l->color),
+                    res = c_add(res, c_mult(c_prod(obj_color, l->color),
                             diff * l->brightness * material->k_diff
                                 * shadow_factor));           
                 t_vec view_dir = vec_mult(ray->direction, -1.0);

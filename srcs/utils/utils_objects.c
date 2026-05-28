@@ -6,13 +6,13 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:34:08 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/25 14:42:15 by vnaoussi         ###   ########.fr       */
+/*   Updated: 2026/05/28 15:21:50 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "miniRT.h"
 
-static	void	get_caracteristic(char **split_line, t_material *material,
+/*static	void	get_caracteristic(char **split_line, t_material *material,
 		int start_index)
 {
 	if (!split_line[start_index])
@@ -42,8 +42,84 @@ static	void	get_caracteristic(char **split_line, t_material *material,
 			}
 		}
 	}
-}
+}*/
 
+static void get_caracteristic(char **split_line,
+            t_material *material,
+            int i)
+{
+    if (!split_line || !material)
+		return ;
+
+    // valeurs par défaut
+    material->k_diff = 1.0;
+    material->k_spec = 0.0;
+    material->shinness = 1.0;
+    material->ior = 1.0;
+    material->transparency = 0.0;
+    material->is_checkerboard = 0;
+    material->checker_scale = 1.0;
+
+	
+    if (!split_line[i])
+        return ;
+    get_color_from_str(split_line[i], &material->color);
+	i++;
+	if (split_line[i])
+		material->k_diff = ft_atod(split_line[i]);
+	else
+		return ;
+	i++;
+
+	if (split_line[i])
+		material->k_spec = ft_atod(split_line[i]);
+	else
+		return ;
+	i++;
+	
+	if (split_line[i])
+		material->shinness = ft_atod(split_line[i]);
+	else
+		return ;
+	i++;
+
+	if (split_line[i])
+		material->ior = ft_atod(split_line[i]);
+	else
+		return ;
+	i++;
+	
+	if (split_line[i])
+		material->transparency = ft_atod(split_line[i]);
+	else
+		return ;
+	i++;
+	
+    if (split_line[i] && ft_strcmp(split_line[i], "checker") == 0)
+    {
+        material->is_checkerboard = 1;
+        i++;
+
+        if (split_line[i])
+            get_color_from_str(split_line[i], &material->checker_color1);
+		else
+			return ;
+        i++;
+
+        if (split_line[i])
+            get_color_from_str(split_line[i], &material->checker_color2);
+		else
+			return ;
+        i++;
+
+        if (split_line[i])
+        {
+            material->checker_scale = ft_atod(split_line[i]);
+            if (material->checker_scale <= 0)
+                material->checker_scale = 1.0;
+        }
+    }
+}
 
 t_sphere	*get_sphere(char **split_line)
 {
