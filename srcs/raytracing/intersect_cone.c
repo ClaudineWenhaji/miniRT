@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 15:12:51 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/22 18:12:36 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/29 15:04:09 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,10 @@ int	intersect_cone(t_cone *cone, t_ray *ray, double *t)
 	b = 2.0 * ((dv * xv)
 			- (vec_dot(ray->direction, oc) * (cosine * cosine)));
 	c = (xv * xv) - (vec_dot(oc, oc) * (cosine * cosine));
+	//if (fabs(a) < EPSILON)
+	//	return (*t > EPSILON && *t < INFINITY);
 	if (fabs(a) < EPSILON)
-		return (*t > EPSILON && *t < INFINITY);
+		return (0);
 	discriminant = b * b - 4.0 * a * c;
 	if (discriminant < 0)
 		return (*t > EPSILON && *t < INFINITY);

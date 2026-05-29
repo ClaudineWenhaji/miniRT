@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:34:08 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/28 15:21:50 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/28 16:19:37 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ static void get_caracteristic(char **split_line,
     material->transparency = 0.0;
     material->is_checkerboard = 0;
     material->checker_scale = 1.0;
-
 	
     if (!split_line[i])
         return ;

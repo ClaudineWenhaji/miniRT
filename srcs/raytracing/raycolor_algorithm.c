@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/23 18:19:47 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/28 14:52:43 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/29 16:35:01 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ static t_color get_object_color(void *object, t_point hit_point)
     if (*(t_type *)object == CYLINDER)
         return (checker_cylinder((t_cylinder *)object, &mat, hit_point));
     if (*(t_type *)object == CONE)
-        return (checker_cone((t_cone *)object, &   mat, hit_point));
+        return (checker_cone((t_cone *)object, &mat, hit_point));
     return (mat.color);
 }
 
