@@ -1,0 +1,9 @@
+A 0.3 150,100,255
+C 0,2,20 0,0,-1 75
+L 5,10,5 0.8 255,255,255
+pl 0,-10,0 0,1,0 100,100,100 dif:dif:1.0 spe:spe:0.0 shi:shi:1 ior:ior:1.0 tra:tra:0.0
+pl 0,0,-20 0,0,1 120,100,150 dif:dif:1.0 spe:spe:0.0 shi:shi:1 ior:ior:1.0 tra:tra:0.0
+cy 0,-10,-5 0,1,0 1.5 6 139,69,19 dif:dif:1.0 spe:spe:0.0 shi:shi:1 ior:ior:1.0 tra:tra:0.0
+cy 0,-4,-5 0,1,0 12 0.5 139,69,19 dif:dif:1.0 spe:spe:0.0 shi:shi:1 ior:ior:1.0 tra:tra:0.0
+sp -5,-2,-5 5.0 255,255,255 dif:dif:1.0 spe:spe:0.0 shi:shi:1 ior:ior:1.0 tra:tra:0.0 tex:tex:textures/mercury.xpm
+sp 5,-2,-5 5.0 255,255,255 dif:dif:1.0 spe:spe:0.0 shi:shi:1 ior:ior:1.0 tra:tra:0.0 tex:tex:textures/earth.xpm

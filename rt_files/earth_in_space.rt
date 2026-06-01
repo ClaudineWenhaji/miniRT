@@ -1,0 +1,9 @@
+A 0.02 255,255,255
+
+C 0,40,150 0,-0.2,-1 60
+
+L -1000,500,1000 1.0 255,255,255
+
+sp 0,0,0 80 255,255,255 dif:1.0 spe:0.2 shi:20 ior:1.0 tra:0.0 tex:textures/earth.xpm
+
+sp 100,60,-50 50 255,255,255 dif:1.0 spe:0.0 shi:1 ior:1.0 tra:0.0 tex:textures/moon.xpm

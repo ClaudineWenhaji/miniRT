@@ -1,0 +1,11 @@
+A 0.1 255,255,255
+
+C 0,40,250 0,-0.1,-1 40
+
+L 200,150,400 1.5 255,255,255
+
+sp 0,0,0 80.0 255,255,255 dif:1.0 spe:0.2 shi:20.0 tex:textures/earth.xpm
+
+sp -130,80,-50 45.0 255,255,255 dif:1.0 spe:0.0 tex:textures/moon.xpm
+
+sp 0,0,0 1000.0 255,255,255 emi:1.0 tex:textures/starmap.xpm

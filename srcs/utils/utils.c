@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:13:31 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/25 14:40:17 by vnaoussi         ###   ########.fr       */
+/*   Updated: 2026/05/29 01:40:20 by vnaoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ double	ft_atod(char *number)
 	return (sign * (integer_part + decimal_part));
 }
 
-void	clean_window(t_win *window)
+static void	clean_window(t_win *window)
 {
 	if (!window)
 		return ;
@@ -72,94 +72,32 @@ void	clean_window(t_win *window)
 	free(window);
 }
 
+static void	clear_object_texture(t_scene *scene, void *object)
+{
+	t_material material;
+
+	material = get_obj_material(object);
+	if (material.texture)
+	{
+		mlx_destroy_image(scene->window->mlx,
+				(material.texture)->img_ptr);
+		free(material.texture);
+	}
+}
+
 void	ft_clean(t_scene **scene)
 {
+	t_list	*object;
+
+	object = (*scene)->objects;
+	while (object)
+	{
+		clear_object_texture(*scene, object);
+		object = object->next;
+	}
 	ft_lstclear(&(*scene)->objects, free);
 	ft_lstclear(&(*scene)->lights, free);
 	clean_window((*scene)->window);
 	free(*scene);
 	*scene = NULL;
-}
-
-static void	print_vec(char *name, t_vec v)
-{
-	printf("  %s: %f, %f, %f\n", name, v.x, v.y, v.z);
-}
-
-static void	print_color(t_color c)
-{
-	printf("  Color: %f, %f, %f\n", c.red, c.green, c.blue);
-}
-
-void	print_scene_info(t_scene *scene)
-{
-	t_list	*tmp;
-
-	printf("--- Scene Info ---\n");
-	printf("Camera:\n");
-	print_vec("Pos", scene->camera.viewpoint);
-	print_vec("Dir", scene->camera.direction);
-	printf("  FOV: %f\n", scene->camera.fov);
-	tmp = scene->lights;
-	while (tmp)
-	{
-		t_type_light type = *(t_type_light *)tmp->content;
-		if (type == AMBIENT)
-		{
-			t_ambient *a = (t_ambient *)tmp->content;
-			printf("Ambient Light:\n");
-			printf("  Ratio: %f\n", a->ratio);
-			print_color(a->color);
-		}
-		else if (type == LIGHT)
-		{
-			t_light *l = (t_light *)tmp->content;
-			printf("Point Light:\n");
-			print_vec("Pos", l->pos);
-			printf("  Brightness: %f\n", l->brightness);
-			print_color(l->color);
-		}
-		tmp = tmp->next;
-	}
-	tmp = scene->objects;
-	while (tmp)
-	{
-		t_type type = *(t_type *)tmp->content;
-		if (type == SPHERE)
-		{
-			t_sphere *s = (t_sphere *)tmp->content;
-			printf("Sphere:\n");
-			print_vec("Center", s->center);
-			printf("  Diameter: %f\n", s->diameter);
-			print_color(s->material.color);
-		}
-		else if (type == PLANE)
-		{
-			t_plane *p = (t_plane *)tmp->content;
-			printf("Plane:\n");
-			print_vec("Point", p->point);
-			print_vec("Normal", p->normal);
-			print_color(p->material.color);
-		}
-		else if (type == CYLINDER)
-		{
-			t_cylinder *cy = (t_cylinder *)tmp->content;
-			printf("Cylinder:\n");
-			print_vec("Center", cy->center);
-			print_vec("Axis", cy->axis);
-			printf("  Diameter: %f, Height: %f\n", cy->diameter, cy->height);
-			print_color(cy->material.color);
-		}
-		else if (type == CONE)
-		{
-			t_cone *co = (t_cone *)tmp->content;
-			printf("Cone:\n");
-			print_vec("Apex", co->apex);
-			print_vec("Axis", co->axis);
-			printf("  Angle: %f, Height: %f\n", co->angle, co->height);
-			print_color(co->material.color);
-		}
-		tmp = tmp->next;
-	}
-	printf("------------------\n");
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raycolor_algorithm.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vnaoussi <vnaoussi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/23 18:19:47 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/29 16:35:01 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/06/01 16:17:55 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ static t_vec get_normal_any(void *obj, t_point hit_point)
     return (vector(0, 1, 0));
 }
 
-static t_material get_obj_material(void *object)
+t_material get_obj_material(void *object)
 {
     if (*(t_type *)object == SPHERE)
         return (((t_sphere *)object)->material);
@@ -103,7 +103,7 @@ static t_material get_obj_material(void *object)
         return (((t_cone *)object)->material);
     if (*(t_type *)object == PLANE)
         return (((t_plane *)object)->material);
-    return ((t_material){{0,0,0}, 1, 0, 1, 1, 0, 1, {0,0,0}, {0,0,0}, 0});
+    return ((t_material){{0,0,0}, 1, 0, 1, 1, 0, 1, 0, NULL, {0,0,0}, {0,0,0}, 0});
 }
 
 static t_color get_object_color(void *object, t_point hit_point)
@@ -134,12 +134,19 @@ static t_color phong_model(t_scene *scene, void *obj, t_material *material,
     double  spec;
     double  t_shadow;
     void    *shadow_obj;
-    t_color  obj_color = get_object_color(obj, hit_point);
 
+    t_color  obj_color = get_object_color(obj, hit_point);
     if (vec_dot(normal, ray->direction) > 0)
         normal = vec_mult(normal, -1.0);
-    while (light_node)
-    {
+
+    if (material->texture)
+        obj_color = get_color_from_texture(normal, hit_point, obj,
+            material->texture, material);
+
+    if (material->emissive > 0)
+        return (c_mult(obj_color, material->emissive));
+
+    while (light_node)    {
         if (*(t_type_light *)light_node->content == AMBIENT)
         {
             t_ambient *amb = (t_ambient *)light_node->content;
@@ -171,7 +178,7 @@ static t_color phong_model(t_scene *scene, void *obj, t_material *material,
                 if (diff > 0)
                     res = c_add(res, c_mult(c_prod(obj_color, l->color),
                             diff * l->brightness * material->k_diff
-                                * shadow_factor));           
+                                * shadow_factor));
                 t_vec view_dir = vec_mult(ray->direction, -1.0);
                 reflect_dir = vec_sub(vec_mult(normal, 2.0 * vec_dot(normal, light_dir)), light_dir);
                 reflect_dir = vec_normalize(reflect_dir);
@@ -188,15 +195,15 @@ static t_color phong_model(t_scene *scene, void *obj, t_material *material,
 }
 
 static t_ray calculate_refract(t_vec incident, t_vec normal,
-        t_point hit_point, double ior)
+        t_point hit_point, double ior_in, double ior_out)
 {
     double  cos_i = fmin(vec_dot(vec_mult(incident, -1.0), normal), 1.0);
-    double  eta = 1.0 / ior;
+    double  eta = ior_out / ior_in;
     t_ray   ray;
 
     if (vec_dot(incident, normal) > 0)
     {
-        eta = ior;
+        eta = ior_in / ior_out;
         normal = vec_mult(normal, -1.0);
         cos_i = fmin(vec_dot(vec_mult(incident, -1.0), normal), 1.0);
     }
@@ -212,7 +219,7 @@ static t_ray calculate_refract(t_vec incident, t_vec normal,
     return (ray);
 }
 
-t_color ray_color_recursive(t_scene *scene, t_ray ray, int depth)
+t_color ray_color_recursive(t_scene *scene, t_ray ray, int depth, double ior)
 {
     void        *object;
     double      t;
@@ -242,22 +249,15 @@ t_color ray_color_recursive(t_scene *scene, t_ray ray, int depth)
                     vec_mult(normal, 2.0 * vec_dot(normal, ray.direction))));
             t_ray r_ray = {vec_add(hit_point, vec_mult(normal, EPSILON * 2.0)),
                 r_dir};
-            reflection = ray_color_recursive(scene, r_ray, depth + 1);
+            reflection = ray_color_recursive(scene, r_ray, depth + 1, ior);
         }
         if (mat.transparency > 0)
         {
             t_ray re_ray = calculate_refract(ray.direction, normal, hit_point,
-                    mat.ior);
+                    mat.ior, ior);
             if (vec_length(re_ray.direction) > 0)
-                refraction = ray_color_recursive(scene, re_ray, depth + 1);
-            /*else
-            {
-                t_vec r_dir = vec_normalize(vec_sub(ray.direction,
-                    vec_mult(normal, 2.0 * vec_dot(normal, ray.direction))));
-                t_ray r_ray = {vec_add(hit_point,
-                        vec_mult(normal, EPSILON * 2.0)), r_dir};
-                reflection = ray_color_recursive(scene, r_ray, depth + 1);
-            }*/
+                refraction = ray_color_recursive(scene, re_ray, depth + 1,
+                        mat.ior);
         }
         final_c = c_add(c_mult(local, (1.0 - mat.transparency)),
                         c_mult(refraction, mat.transparency));
@@ -273,7 +273,7 @@ int ray_color(t_scene *scene, t_ray ray)
 {
     t_color res;
 
-    res = ray_color_recursive(scene, ray, 0);
+    res = ray_color_recursive(scene, ray, 0, 1.0);
     return (color_to_int_local(res));
 }
 

@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 17:23:21 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/22 17:08:45 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/05/29 01:18:45 by vnaoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,20 +30,20 @@ static int	get_light(char **split_line, t_list **lights)
 	return (ft_lstadd_back(lights, node), 1);
 }
 
-static int	get_objects(char **split_line, t_list **objects)
+static int	get_objects(t_scene *scene, char **split_line, t_list **objects)
 {
 	void	*object;
 	t_list	*node;
 
 	object = NULL;
 	if (ft_strcmp(split_line[0], "sp") == 0)
-		object = get_sphere(split_line);
+		object = get_sphere(scene, split_line);
 	else if (ft_strcmp(split_line[0], "pl") == 0)
-		object = get_plane(split_line);
+		object = get_plane(scene, split_line);
 	else if (ft_strcmp(split_line[0], "cy") == 0)
-		object = get_cylinder(split_line);
+		object = get_cylinder(scene, split_line);
 	else if (ft_strcmp(split_line[0], "co") == 0)
-		object = get_cone(split_line);
+		object = get_cone(scene, split_line);
 	if (!object)
 		return (0);
 	node = ft_lstnew(object);
@@ -69,7 +69,7 @@ static int	split_and_get_scene(char *line, t_scene *scene)
 		|| ft_strcmp(split_line[0], "sp") == 0
 		|| ft_strcmp(split_line[0], "cy") == 0
 		|| ft_strcmp(split_line[0], "co") == 0)
-		result = get_objects(split_line, &scene->objects);
+		result = get_objects(scene, split_line, &scene->objects);
 	else
 		return (ft_free_table((void **)split_line, -1),
 			printf("Error\nInvalid identifier"), 0);

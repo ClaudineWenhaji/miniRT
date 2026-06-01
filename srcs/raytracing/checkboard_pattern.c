@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/28 14:47:07 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/29 16:37:18 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/06/01 15:22:54 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,173 +55,139 @@ t_color checker_sphere(t_sphere *sphere, t_material *material, t_point hit_point
     return (material->checker_color2);
 }
 
-t_color checker_cylinder(t_cylinder *cylinder, t_material *material, t_point hit_point)
+static void	cylinder_basis(t_vec axis, t_vec *t, t_vec *b)
 {
-    t_vec local_hit = vec_sub(hit_point, cylinder->center);
-    
-    double phi = atan2(local_hit.z, local_hit.x);
-    double u_coord = (phi + PI) / (2.0 * PI);
-    double v_coord = local_hit.y / cylinder->height;
-    
-    int x_check = (int)floor(u_coord * material->checker_scale);
-    int y_check = (int)floor(v_coord * material->checker_scale);
-  
-    if (((x_check + y_check) % 2 + 2) % 2 == 0)
-        return (material->checker_color1);
-    return (material->checker_color2);     
-}
-
-/*t_color checker_cone(t_cone *cone, t_material *material, t_point hit_point)
-{
-    t_vec local_hit = vec_sub(hit_point, cone->apex);
-    
-    double phi = atan2(local_hit.z, local_hit.x);
-    double u_coord = (phi + PI) / (2.0 * PI);
-    //double v_coord = local_hit.y / cone->height;
-    double v_coord = vec_dot(local_hit, cone->axis) / cone->height; // Use distance from apex for v coordinate
-    
-    int x_check = (int)floor(u_coord * material->checker_scale);
-    int y_check = (int)floor(v_coord * material->checker_scale);
-    if (((x_check + y_check) % 2 + 2) % 2 == 0)
-        return (material->checker_color1);
-    return (material->checker_color2);     
-}*/
-
-/*t_color	checker_disk(t_cone *cone, t_material *material, t_point hit_point)
-{
-	t_vec	center;
-	t_vec	local;
-	int		x;
-	int		y;
-
-	center = vec_add(cone->apex,
-			vec_mult(cone->axis, cone->height));
-
-	local = vec_sub(hit_point, center);
-
-	x = (int)floor(local.x * material->checker_scale * 0.1);
-	y = (int)floor(local.z * material->checker_scale * 0.1);
-
-	if (((x + y) % 2 + 2) % 2 == 0)
-		return (material->checker_color1);
-
-	return (material->checker_color2);
-}*/
-
-t_color	checker_disk(t_cone *cone,
-	t_material *material,
-	t_point hit_point)
-{
-	t_vec	center;
-	t_vec	local;
 	t_vec	ref;
-	t_vec	tangent;
-	t_vec	bitangent;
-	double	u;
-	double	v;
-	int		x;
-	int		y;
 
-	center = vec_add(cone->apex,
-			vec_mult(cone->axis, cone->height));
-
-	local = vec_sub(hit_point, center);
-
-	/*
-	** base locale du disque
-	*/
-
-	if (fabs(cone->axis.y) < 0.999)
+	if (fabs(axis.y) < 0.999)
 		ref = vector(0, 1, 0);
 	else
 		ref = vector(1, 0, 0);
 
-	tangent = vec_normalize(vec_cross_prod(ref, cone->axis));
-	bitangent = vec_cross_prod(cone->axis, tangent);
-
-	/*
-	** projection locale
-	*/
-
-	u = vec_dot(local, tangent);
-	v = vec_dot(local, bitangent);
-
-	x = (int)floor(u * material->checker_scale);
-	y = (int)floor(v * material->checker_scale);
-
-	if ((x + y) % 2 == 0)
-		return (material->checker_color1);
-
-	return (material->checker_color2);
+	*t = vec_normalize(vec_cross_prod(ref, axis));
+	*b = vec_cross_prod(axis, *t);
 }
 
-t_color	    checker_cone(t_cone *cone, t_material *material, t_point hit_point)
+t_color checker_cylinder(t_cylinder *cylinder,
+                         t_material *material,
+                         t_point hit_point)
 {
-	t_vec	local_hit;
+	t_vec	local;
 	t_vec	tangent;
 	t_vec	bitangent;
-	t_vec	ref;
 	double	x;
 	double	y;
-	double	phi;
 	double	u;
 	double	v;
-	int		check_x;
-	int		check_y;
+	int		cell_x;
+	int		cell_y;
 
-	local_hit = vec_sub(hit_point, cone->apex);
+	local = vec_sub(hit_point, cylinder->center);
 
-	/*
-	** Construction d'une base locale orthogonale
-	** autour de cone->axis
-	*/
+	cylinder_basis(cylinder->axis, &tangent, &bitangent);
 
-	if (fabs(cone->axis.y) < 0.999)
+	// coordonnée autour du cylindre
+	x = vec_dot(local, tangent);
+	y = vec_dot(local, bitangent);
+
+	u = atan2(y, x);
+	u = (u + PI) / (2.0 * PI);
+
+	// sécurité couture
+	if (u >= 1.0)
+		u = 0.0;
+
+	// hauteur projetée sur l'axe
+	v = vec_dot(local, cylinder->axis) / cylinder->height;
+
+	cell_x = (int)floor(u * material->checker_scale);
+	cell_y = (int)floor(v * material->checker_scale);
+
+	if (((cell_x + cell_y) % 2 + 2) % 2 == 0)
+		return (material->checker_color1);
+	return (material->checker_color2);
+}
+
+static t_color	checker_disk(t_cone *cone, t_material *material, t_point hit_point,
+	t_vec tangent,
+	t_vec bitangent)
+{
+	t_vec	center;
+	t_vec	local;
+	int		cell_x;
+	int		cell_y;
+
+	center = vec_add(cone->apex, vec_mult(cone->axis, cone->height));
+	local = vec_sub(hit_point, center);
+	
+	cell_x = (int)floor(vec_dot(local, tangent) * material->checker_scale);
+	cell_y = (int)floor(vec_dot(local, bitangent) * material->checker_scale);
+
+	if (((cell_x + cell_y) % 2 + 2) % 2 == 0)
+		return (material->checker_color1);
+	return (material->checker_color2);
+}
+
+static void	cone_basis(t_vec axis, t_vec *t, t_vec *b)
+{
+	t_vec	ref;
+
+	if (fabs(axis.y) < 0.999)
 		ref = vector(0, 1, 0);
 	else
-		ref = vector(1, 0, 0);
+		ref = vector(0, 0, 1);
 
-	tangent = vec_normalize(vec_cross_prod(ref, cone->axis));
-	bitangent = vec_cross_prod(cone->axis, tangent);
+	*t = vec_normalize(vec_cross_prod(ref, axis));
+	*b = vec_cross_prod(axis, *t);
+}
 
-	/*
-	** Projection locale
-	*/
+t_color	checker_cone(t_cone *cone,
+                       t_material *material,
+                       t_point hit_point)
+{
+	t_vec	local;
+	t_vec	tangent;
+	t_vec	bitangent;
 
-	x = vec_dot(local_hit, tangent);
-	y = vec_dot(local_hit, bitangent);
+	double	x;
+	double	y;
+	double	angle;
+	double	u;
+	double	v;
 
-	/*
-	** Coordonnée angulaire
-	*/
+	int		cell_u;
+	int		cell_v;
 
-	phi = atan2(y, x);
+	local = vec_sub(hit_point, cone->apex);
 
-	u = (phi + PI) / (2.0 * PI);
+	cone_basis(cone->axis, &tangent, &bitangent);
 
-	/* Coordonnée hauteur*/
+	// projection radiale
+	x = vec_dot(local, tangent);
+	y = vec_dot(local, bitangent);
 
+	// angle autour du cône
+	angle = atan2(y, x);
+	u = (angle + PI) / (2.0 * PI);
 
-	v = vec_dot(local_hit, cone->axis) / cone->height;
+	if (u >= 1.0)
+		u = 0.0;
 
-	/*
-	** Protection apex
-	*/
-    if (v < EPSILON)
-    {
-        return (material->checker_color1);  
-    }
- 
-	if (v > 1.0 - EPSILON)
-	{
-        return (checker_disk(cone, material, hit_point));
-	}
+	// hauteur normalisée
+	v = vec_dot(local, cone->axis) / cone->height;
 
-	check_x = (int)floor(u * material->checker_scale);
-	check_y = (int)floor(v * material->checker_scale);
-
-	if (((check_x + check_y) % 2 + 2) % 2 == 0)
+	// protection apex (évite compression extrême)
+	if (v <= EPSILON)
 		return (material->checker_color1);
 
-	return (material->checker_color2);
+	// base du cône → disque
+	if (v >= 1.0 - EPSILON)
+		return (checker_disk(cone, material, hit_point, tangent, bitangent));
+
+	cell_u = (int)floor(u * material->checker_scale);
+	cell_v = (int)floor(v * material->checker_scale);
+
+	if (((cell_u + cell_v) % 2 + 2) % 2 == 0 )
+		return (material->checker_color2);
+	return (material->checker_color1);
 }
