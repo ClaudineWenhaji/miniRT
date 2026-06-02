@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 14:06:09 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/22 17:12:05 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/06/01 18:08:11 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,23 +52,4 @@ t_vec	vec_inv(t_vec v)
 	v.y = -v.y;
 	v.z = -v.z;
 	return (v);
-}
-
-t_vec	vec_div(t_vec v, double k)
-{
-	if (fabs(k) < EPSILON)
-		return ((t_vec){0, 0, 0});
-	v.x = v.x / k;
-	v.y = v.y / k;
-	v.z = v.z / k;
-	return (v);
-}
-
-t_vec	vec_reflection(t_vec dir, t_vec normal)
-{
-	t_vec	result;
-
-	result = vec_mult(normal, 2.0 * vec_dot(dir, normal));
-	result = vec_sub(dir, result);
-	return (result);
 }

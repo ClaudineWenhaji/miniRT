@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/18 16:47:15 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/06/01 14:23:16 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/06/02 15:45:52 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,64 +56,54 @@ static int	intercept_disk_sup(t_cylinder *cylinder, t_ray *ray, double *t)
 	return (1);
 }
 
-t_vec	get_normal_cylinder(t_cylinder *cylinder, t_point hit_point)
+static void	update_cylinder_hit(t_cylinder *cylinder, t_ray *ray,
+		double root, double *t)
 {
 	double	s;
 
-	s = vec_dot(vec_sub(hit_point, cylinder->center), cylinder->axis);
-	if (s > cylinder->height / 2.0 - EPSILON)
-		return (cylinder->axis);
-	else if (s < -cylinder->height / 2.0 + EPSILON)
-		return (vec_mult(cylinder->axis, -1.0));
-	else
-		return (vec_normalize(vec_sub(hit_point, vec_add(cylinder->center,
-						vec_mult(cylinder->axis, s)))));
+	if (root <= EPSILON)
+		return ;
+	s = vec_dot(vec_sub(vec_add(ray->origin,
+					vec_mult(ray->direction, root)),
+				cylinder->center), cylinder->axis);
+	if (s < cylinder->height / 2.0 && s > -cylinder->height / 2.0)
+		if (root < *t)
+			*t = root;
 }
 
-int	intersect_cylinder(t_cylinder *cylinder, t_ray *ray, double *t)
+static int	init_cylinder_quad(t_cylinder *cylinder, t_ray *ray, t_cyl_quad *q)
 {
-	t_vec	d;
-	t_vec	direction_tho;
-	t_vec	d_tho;
-	double	discriminant;
-	double	root;
-	double	s;
+	q->dir_tho = vec_sub(ray->direction, vec_mult(cylinder->axis,
+				vec_dot(ray->direction, cylinder->axis)));
+	q->d = vec_sub(ray->origin, cylinder->center);
+	q->d_tho = vec_sub(q->d, vec_mult(cylinder->axis,
+				vec_dot(q->d, cylinder->axis)));
+	q->discriminant = ft_discriminant(vec_dot(q->dir_tho, q->dir_tho),
+			2 * vec_dot(q->d_tho, q->dir_tho), vec_dot(q->d_tho, q->d_tho)
+			- cylinder->radius * cylinder->radius);
+	return (vec_dot(q->dir_tho, q->dir_tho) >= EPSILON
+		&& q->discriminant >= 0);
+}
+
+int	intersect_cylinder(t_cylinder *cy, t_ray *ray, double *t)
+{
+	t_cyl_quad	q;
+	double		root;
 
 	*t = INFINITY;
 	root = INFINITY;
-	intercept_disk_inf(cylinder, ray, t);
-	if (intercept_disk_sup(cylinder, ray, &root) && root < *t)
+	intercept_disk_inf(cy, ray, t);
+	if (intercept_disk_sup(cy, ray, &root) && root < *t)
 		*t = root;
-	direction_tho = vec_sub(ray->direction, vec_mult(cylinder->axis,
-				vec_dot(ray->direction, cylinder->axis)));
-	d = vec_sub(ray->origin, cylinder->center);
-	d_tho = vec_sub(d, vec_mult(cylinder->axis, vec_dot(d, cylinder->axis)));
-	discriminant = ft_discriminant(vec_dot(direction_tho, direction_tho),
-			2 * vec_dot(d_tho, direction_tho), vec_dot(d_tho, d_tho)
-			- cylinder->radius * cylinder->radius);
-	if (discriminant < 0 || vec_dot(direction_tho, direction_tho) < EPSILON)
+	if (!init_cylinder_quad(cy, ray, &q))
 		return (*t > EPSILON && *t < INFINITY);
-	root = (-2 * vec_dot(d_tho, direction_tho) - sqrt(discriminant))
-		/ (2.0 * vec_dot(direction_tho, direction_tho));
-	if (root > EPSILON)
-	{
-		s = vec_dot(vec_sub(vec_add(ray->origin,
-						vec_mult(ray->direction, root)),
-					cylinder->center), cylinder->axis);
-		if (s < cylinder->height / 2.0 && s > -cylinder->height / 2.0)
-			if (root < *t)
-				*t = root;
-	}
-	root = (-2 * vec_dot(d_tho, direction_tho) + sqrt(discriminant))
-		/ (2.0 * vec_dot(direction_tho, direction_tho));
-	if (root > EPSILON)
-	{
-		s = vec_dot(vec_sub(vec_add(ray->origin,
-						vec_mult(ray->direction, root)),
-					cylinder->center), cylinder->axis);
-		if (s < cylinder->height / 2.0 && s > -cylinder->height / 2.0)
-			if (root < *t)
-				*t = root;
-	}
+	root = (-2 * vec_dot(q.d_tho, q.dir_tho)
+			- sqrt(q.discriminant))
+		/ (2.0 * vec_dot(q.dir_tho, q.dir_tho));
+	update_cylinder_hit(cy, ray, root, t);
+	root = (-2 * vec_dot(q.d_tho, q.dir_tho)
+			+ sqrt(q.discriminant))
+		/ (2.0 * vec_dot(q.dir_tho, q.dir_tho));
+	update_cylinder_hit(cy, ray, root, t);
 	return (*t > EPSILON && *t < INFINITY);
 }

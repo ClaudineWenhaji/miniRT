@@ -12,26 +12,6 @@
 
 #include "miniRT.h"
 
-t_vec	get_normal_cone(t_cone *cone, t_point hit_point)
-{
-	t_vec	normal;
-	t_vec	pc;
-	double	m;
-	double	correction;
-	double	s;
-
-	s = vec_dot(vec_sub(hit_point, cone->apex), cone->axis);
-	if (s > cone->height - EPSILON)
-		return (cone->axis);
-	pc = vec_sub(hit_point, cone->apex);
-	m = vec_dot(pc, cone->axis);
-	correction = 1.0 + tan(cone->angle * PI / 180.0)
-		* tan(cone->angle * PI / 180.0);
-	normal = vec_normalize(
-			vec_sub(pc, vec_mult(cone->axis, m * correction)));
-	return (normal);
-}
-
 static int	intersect_disk(t_cone *cone, t_ray *ray, double *t)
 {
 	t_vec	disk_center;
@@ -56,47 +36,56 @@ static int	intersect_disk(t_cone *cone, t_ray *ray, double *t)
 	return (1);
 }
 
-int	intersect_cone(t_cone *cone, t_ray *ray, double *t)
+static int	init_cone_quad(t_cone *cone, t_ray *ray, t_cone_quad *q)
 {
-	t_vec	oc;
-	double	a;
-	double	b;
-	double	c;
-	double	discriminant;
-	double	root;
-	double	cosine;
-	double	dv;
-	double	xv;
+	q->oc = vec_sub(ray->origin, cone->apex);
+	q->cosine = cos(cone->angle * PI / 180.0);
+	q->dv = vec_dot(ray->direction, cone->axis);
+	q->xv = vec_dot(q->oc, cone->axis);
+	q->a = (q->dv * q->dv) - (q->cosine * q->cosine);
+	q->b = 2.0 * ((q->dv * q->xv)
+			- (vec_dot(ray->direction, q->oc) * (q->cosine * q->cosine)));
+	q->c = (q->xv * q->xv) - (vec_dot(q->oc, q->oc) * (q->cosine * q->cosine));
+	if (fabs(q->a) < EPSILON)
+		return (0);
+	q->discriminant = q->b * q->b - 4.0 * q->a * q->c;
+	return (q->discriminant >= 0);
+}
+
+static int	cone_root(t_cone_quad *q, double *root)
+{
+	*root = (-q->b - sqrt(q->discriminant)) / (2.0 * q->a);
+	if (*root < EPSILON)
+	{
+		*root = (-q->b + sqrt(q->discriminant)) / (2.0 * q->a);
+		if (*root < EPSILON)
+			return (0);
+	}
+	return (1);
+}
+
+static int	cone_height_ok(t_cone *cone, t_ray *ray, double root)
+{
 	t_vec	hit_point;
 	double	s;
 
-	*t = INFINITY;
-	intersect_disk(cone, ray, t);
-	oc = vec_sub(ray->origin, cone->apex);
-	cosine = cos(cone->angle * PI / 180.0);
-	dv = vec_dot(ray->direction, cone->axis);
-	xv = vec_dot(oc, cone->axis);
-	a = (dv * dv) - (cosine * cosine);
-	b = 2.0 * ((dv * xv)
-			- (vec_dot(ray->direction, oc) * (cosine * cosine)));
-	c = (xv * xv) - (vec_dot(oc, oc) * (cosine * cosine));
-	if (fabs(a) < EPSILON)
-		return (*t > EPSILON && *t < INFINITY);
-	discriminant = b * b - 4.0 * a * c;
-	if (discriminant < 0)
-		return (*t > EPSILON && *t < INFINITY);
-	root = (-b - sqrt(discriminant)) / (2.0 * a);
-	if (root < EPSILON)
-	{
-		root = (-b + sqrt(discriminant)) / (2.0 * a);
-		if (root < EPSILON)
-			return (*t > EPSILON && *t < INFINITY);
-	}
 	hit_point = vec_add(ray->origin, vec_mult(ray->direction, root));
 	s = vec_dot(vec_sub(hit_point, cone->apex), cone->axis);
-	if (s < EPSILON)
+	return (s > EPSILON && s < cone->height - EPSILON);
+}
+
+int	intersect_cone(t_cone *cone, t_ray *ray, double *t)
+{
+	t_cone_quad	q;
+	double		root;
+
+	*t = INFINITY;
+	intersect_disk(cone, ray, t);
+	if (!init_cone_quad(cone, ray, &q))
 		return (*t > EPSILON && *t < INFINITY);
-	if (s > (cone->height) - EPSILON)
+	if (!cone_root(&q, &root))
+		return (*t > EPSILON && *t < INFINITY);
+	if (!cone_height_ok(cone, ray, root))
 		return (*t > EPSILON && *t < INFINITY);
 	if (*t > root)
 		*t = root;

@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 00:19:44 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/25 14:38:22 by vnaoussi         ###   ########.fr       */
+/*   Updated: 2026/06/01 18:03:49 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,35 +21,42 @@ void	exit_program(void *param)
 	exit (0);
 }
 
-static int	init_img_with_color(void *mlx, t_img **img, char bytes)
+static int	create_img(void *mlx, t_img **img)
 {
 	t_img	*img_tmp;
-	int		total_bytes;
 
 	img_tmp = *img;
-	(void)bytes;
-	if (img_tmp == NULL)
-	{
-		img_tmp = (t_img *)malloc(sizeof(t_img));
-		if (!img_tmp)
-			return (0);
-		img_tmp->aspect_ratio = 16.0 / 9.0;
-		img_tmp->image_width = WINDOWS_WIDTH;
-		img_tmp->image_height = (int)(
-				(double)img_tmp->image_width / img_tmp->aspect_ratio);
-		if (img_tmp->image_height < 1)
-			img_tmp->image_height = 1;
-		img_tmp->img_ptr = mlx_new_image(mlx, img_tmp->image_width,
-				img_tmp->image_height);
-		if (!img_tmp->img_ptr)
-			return (free(img_tmp), 0);
-		img_tmp->data = mlx_get_data_addr(img_tmp->img_ptr,
-				&(img_tmp->bit_per_pixel), &(img_tmp->size_line),
-				&(img_tmp->endian));
-	}
-	total_bytes = img_tmp->image_height * img_tmp->size_line;
-	ft_memset(img_tmp->data, bytes, total_bytes);
+	img_tmp = (t_img *)malloc(sizeof(t_img));
+	if (!img_tmp)
+		return (0);
+	img_tmp->aspect_ratio = 16.0 / 9.0;
+	img_tmp->image_width = WINDOWS_WIDTH;
+	img_tmp->image_height = (int)(
+			(double)img_tmp->image_width / img_tmp->aspect_ratio);
+	if (img_tmp->image_height < 1)
+		img_tmp->image_height = 1;
+	img_tmp->img_ptr = mlx_new_image(mlx, img_tmp->image_width,
+			img_tmp->image_height);
+	if (!img_tmp->img_ptr)
+		return (free(img_tmp), 0);
+	img_tmp->data = mlx_get_data_addr(img_tmp->img_ptr,
+			&(img_tmp->bit_per_pixel), &(img_tmp->size_line),
+			&(img_tmp->endian));
 	*img = img_tmp;
+	return (1);
+}
+
+static int	init_img_with_color(void *mlx, t_img **img, char bytes)
+{
+	int		total_bytes;
+
+	if (*img == NULL)
+	{
+		if (!create_img(mlx, img))
+			return (0);
+	}
+	total_bytes = (*img)->image_height * (*img)->size_line;
+	ft_memset((*img)->data, bytes, total_bytes);
 	return (1);
 }
 
@@ -89,7 +96,7 @@ int	main(int argc, char **argv)
 		return (ft_clean(&scene), 1);
 	render(scene);
 	mlx_put_image_to_window(scene->window->mlx, scene->window->win,
-			scene->window->img->img_ptr, 0, 0);
+		scene->window->img->img_ptr, 0, 0);
 	mlx_hook(scene->window->win, 2, 1L << 0, (void *)handle_keypress, scene);
 	mlx_hook(scene->window->win, 17, 0, (void *)exit_program, scene);
 	mlx_loop(scene->window->mlx);

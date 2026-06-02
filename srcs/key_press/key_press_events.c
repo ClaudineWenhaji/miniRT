@@ -6,11 +6,11 @@
 /*   By: vnaoussi <vnaoussi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 16:43:55 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/22 17:08:57 by vnaoussi         ###   ########.fr       */
+/*   Updated: 2026/06/01 17:29:34 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "miniRT.h"
+#include "miniRT.h"
 
 int	handle_keypress(int keysym, void *param)
 {

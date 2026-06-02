@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 00:16:12 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/06/01 15:38:18 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/06/01 17:49:44 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,34 @@ typedef struct s_vec
 	double	y;
 	double	z;
 }	t_vec;
+
+typedef struct s_quad
+{
+	double	a;
+	double	b;
+	double	c;
+	double	discriminant;
+}	t_quad;
+
+typedef struct s_cyl_quad
+{
+	t_vec	d;
+	t_vec	dir_tho;
+	t_vec	d_tho;
+	double	discriminant;
+}	t_cyl_quad;
+
+typedef struct s_cone_quad
+{
+	t_vec	oc;
+	double	cosine;
+	double	dv;
+	double	xv;
+	double	a;
+	double	b;
+	double	c;
+	double	discriminant;
+}	t_cone_quad;
 
 typedef struct s_color
 {
@@ -91,29 +119,29 @@ typedef enum e_type
 
 typedef t_img	t_texture;
 
-typedef struct	s_material
+typedef struct s_material
 {
-	t_color	color;
-	double	k_diff;
-	double	k_spec;
-	double	shinness;
-	double	ior;
-	double	transparency;
-	int		is_checkerboard;	
+	t_color		color;
+	double		k_diff;
+	double		k_spec;
+	double		shinness;
+	double		ior;
+	double		transparency;
 	double		emissive;
+	int			is_checkerboard;	
 	t_texture	*texture;
-	t_color checker_color1;
-	t_color checker_color2;
-	double	checker_scale;
+	t_color		checker_color1;
+	t_color		checker_color2;
+	double		checker_scale;
 }	t_material;
 
 typedef struct s_sphere
 {
-	t_type	identifier;
-	t_point	center;
-	double	radius;
-	double	diameter;
-	t_material	material;
+	t_type			identifier;
+	t_point			center;
+	double			radius;
+	double			diameter;
+	t_material		material;
 }	t_sphere;
 
 typedef struct s_plane
@@ -145,7 +173,7 @@ typedef struct s_cone
 	t_material	material;
 }	t_cone;
 
-typedef struct	s_viewport
+typedef struct s_viewport
 {
 	double	viewport_height;
 	double	viewport_width;
@@ -207,14 +235,18 @@ void		render(t_scene *scene);
 int			intersect_cylinder(t_cylinder *cylinder, t_ray *ray, double *t);
 t_vec		get_normal_cylinder(t_cylinder *cylinder, t_point hit_point);
 void		exit_program(void *param);
-t_color		checker_plane(t_plane *plane, t_material *material, t_point hit_point);
-t_color		checker_sphere(t_sphere *sphere, t_material *material, t_point hit_point);
-t_color		checker_cylinder(t_cylinder *cylinder, t_material *material, t_point hit_point);
-t_color		checker_cone(t_cone *cone, t_material *material, t_point hit_point);
+t_color		checker_plane(t_plane *plane, t_material *material,
+				t_point hit_point);
+t_color		checker_sphere(t_sphere *sphere, t_material *material,
+				t_point hit_point);
+t_color		checker_cylinder(t_cylinder *cylinder, t_material *material,
+				t_point hit_point);
+t_color		checker_cone(t_cone *cone, t_material *material,
+				t_point hit_point);
 t_color		int_to_color(int color);
 t_texture	*get_texture(t_scene *scene, char *path);
-t_color		get_color_from_texture(t_vec normal, t_point hit_point, void *object,
-		t_texture *texture, t_material *material);
+t_color		get_color_from_texture(t_vec normal, t_point hit_point,
+				void *object, t_texture *texture, t_material *material);
 t_material	get_obj_material(void *object);
 
 #endif
