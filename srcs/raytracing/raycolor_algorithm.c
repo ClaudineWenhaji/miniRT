@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raycolor_algorithm.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vnaoussi <vnaoussi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/23 18:19:47 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/06/01 16:17:55 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/06/03 18:17:58 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,14 +134,19 @@ static t_color phong_model(t_scene *scene, void *obj, t_material *material,
     double  spec;
     double  t_shadow;
     void    *shadow_obj;
+    t_texture_info info;
 
+    info.object = obj;
+    info.material = material;
+    info.texture = material->texture;
     t_color  obj_color = get_object_color(obj, hit_point);
     if (vec_dot(normal, ray->direction) > 0)
         normal = vec_mult(normal, -1.0);
 
     if (material->texture)
-        obj_color = get_color_from_texture(normal, hit_point, obj,
-            material->texture, material);
+        //obj_color = get_color_from_texture(normal, hit_point, obj,
+         //   material->texture, material);
+        obj_color = get_color_from_texture(normal, hit_point, &info);
 
     if (material->emissive > 0)
         return (c_mult(obj_color, material->emissive));

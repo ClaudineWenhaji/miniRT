@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:13:31 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/29 01:40:20 by vnaoussi         ###   ########.fr       */
+/*   Updated: 2026/06/03 14:50:12 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,36 +21,6 @@ void	ft_free_table(void **table, int len)
 		len = INT_MAX;
 	while (table[++i] && i < len)
 		free(table[i]);
-}
-
-double	ft_atod(char *number)
-{
-	char	**parts;
-	double	integer_part;
-	double	decimal_part;
-	double	sign;
-	int		i;
-
-	sign = 1.0;
-	if (*number == '-')
-	{
-		sign = -1.0;
-		number++;
-	}
-	parts = ft_split(number, '.');
-	if (!parts)
-		return (0);
-	integer_part = (double)ft_atoi(parts[0]);
-	decimal_part = 0.0;
-	if (parts[1])
-	{
-		decimal_part = (double)ft_atoi(parts[1]);
-		i = -1;
-		while (parts[1][++i])
-			decimal_part /= 10.0;
-	}
-	ft_free_table((void **)parts, -1);
-	return (sign * (integer_part + decimal_part));
 }
 
 static void	clean_window(t_win *window)
@@ -74,13 +44,13 @@ static void	clean_window(t_win *window)
 
 static void	clear_object_texture(t_scene *scene, void *object)
 {
-	t_material material;
+	t_material	material;
 
 	material = get_obj_material(object);
 	if (material.texture)
 	{
 		mlx_destroy_image(scene->window->mlx,
-				(material.texture)->img_ptr);
+			(material.texture)->img_ptr);
 		free(material.texture);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 00:16:12 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/06/01 17:49:44 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/06/03 18:11:32 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include "libft.h"
 # include "windows.h"
+# include "norminette.h"
 # include <math.h>
 # include <sys/time.h>
 # include <stdio.h>
@@ -33,34 +34,6 @@ typedef struct s_vec
 	double	y;
 	double	z;
 }	t_vec;
-
-typedef struct s_quad
-{
-	double	a;
-	double	b;
-	double	c;
-	double	discriminant;
-}	t_quad;
-
-typedef struct s_cyl_quad
-{
-	t_vec	d;
-	t_vec	dir_tho;
-	t_vec	d_tho;
-	double	discriminant;
-}	t_cyl_quad;
-
-typedef struct s_cone_quad
-{
-	t_vec	oc;
-	double	cosine;
-	double	dv;
-	double	xv;
-	double	a;
-	double	b;
-	double	c;
-	double	discriminant;
-}	t_cone_quad;
 
 typedef struct s_color
 {
@@ -134,6 +107,13 @@ typedef struct s_material
 	t_color		checker_color2;
 	double		checker_scale;
 }	t_material;
+
+typedef struct s_texture_info
+{
+	void		*object;
+	t_texture	*texture;
+	t_material	*material;
+}	t_texture_info;
 
 typedef struct s_sphere
 {
@@ -218,6 +198,8 @@ t_sphere	*get_sphere(t_scene *scene, char **line);
 t_plane		*get_plane(t_scene *scene, char **line);
 t_cylinder	*get_cylinder(t_scene *scene, char **line);
 t_cone		*get_cone(t_scene *scene, char **split_line);
+int			get_specific_el(char *element, t_material *material,
+				t_scene *scene);
 int			get_vector_from_str(char *vector_str, t_vec *vectors);
 int			get_color_from_str(char *color_str, t_color *color);
 int			setup_camera(char **split_line, t_camera *camera);
@@ -245,8 +227,10 @@ t_color		checker_cone(t_cone *cone, t_material *material,
 				t_point hit_point);
 t_color		int_to_color(int color);
 t_texture	*get_texture(t_scene *scene, char *path);
-t_color		get_color_from_texture(t_vec normal, t_point hit_point,
-				void *object, t_texture *texture, t_material *material);
+t_color	get_color_from_texture(t_vec normal, t_point hit_point,
+			t_texture_info *info);
+//t_color		get_color_from_texture(t_vec normal, t_point hit_point,
+//				void *object, t_texture *texture, t_material *material);
 t_material	get_obj_material(void *object);
 
 #endif

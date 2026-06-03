@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_textures.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vnaoussi <vnaoussi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/28 22:28:28 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/06/02 12:00:15 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/06/03 18:14:40 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,64 +33,7 @@ t_texture	*get_texture(t_scene *scene, char *path)
 	return (texture);
 }
 
-/*static void	get_sphere_uv(t_vec normal, double *u, double *v)
-{
-	u = 0.5 + atan2(normal.x, normal.z) / (2.0 * PI);
-	v = acos(fmin(1.0, fmax(-1.0, normal.y))) / PI;
-
-}*/
-
-/*static void	get_plane_uv(t_vec normal, t_point hit_point,
-			t_plane *plane, double uv[2])
-{
-	t_vec	u_dir;
-	t_vec	v_dir;
-	t_vec	reference;
-
-	if (fabs(normal.y) > 0.9)
-		reference = vector(0, 0, 1);
-	else
-		reference = vector(0, 1, 0);
-	u_dir = vec_normalize(vec_cross_prod(reference, normal));
-	v_dir = vec_cross_prod(normal, u_dir);
-	uv[0] = vec_dot(vec_sub(hit_point, ((t_plane *)object)->point), u_dir);
-	uv[1] = vec_dot(vec_sub(hit_point, ((t_plane *)object)->point), v_dir);
-	uv[0] = fmod(u, 1.0);
-	uv[1] = fmod(v, 1.0);
-	if (uv[0] < 0)
-		uv[0] += 1.0;
-	if (uv[1] < 0)
-		uv[1] += 1.0;
-
-}*/
-
-/*static int	get_texture_pixel(t_texture *texture, double u, double v)
-{
-	int	pixel[2];
-
-	pixel[0] = (int)(u * (texture->image_width - 1));
-	pixel[1] = (int)(v * (texture->image_height - 1));
-	return ( *(int *)(texture->data + (pixel[1] * texture->size_line
-			+ pixel[0] * (texture->bit_per_pixel / 8))));
-}*/
-
 /*t_color	get_color_from_texture(t_vec normal, t_point hit_point,
- 			void *object, t_texture *texture, t_material *material)
-{
-	double		uv[2];
-	int			color;
-
-	if (*(t_type *)object != SPHERE && *(t_type *)object != PLANE)
-		return (material->color);
-	if (*(t_type *)object == SPHERE)
-		get_sphere_uv(normal, &uv[0], &uv[1]);
-	else
-		get_plane_uv(normal, hit_point, (t_plane *)object, uv);
-	color = get_texture_pixel(texture, uv[0], uv[1]) 
-	return (int_to_color(color));
-}*/
-
-t_color	get_color_from_texture(t_vec normal, t_point hit_point,
 		void *object, t_texture *texture, t_material *material)
 {
 	double	u;
@@ -129,5 +72,58 @@ t_color	get_color_from_texture(t_vec normal, t_point hit_point,
 	pixel[1] = (int)(v * (texture->image_height - 1));
 	color = *(int *)(texture->data + (pixel[1] * texture->size_line
 				+ pixel[0] * (texture->bit_per_pixel / 8)));
+	return (int_to_color(color));
+}*/
+
+/*static void sphere_uv(t_vec normal, t_uv *uv)
+{
+	uv->u_coord = 0.5 + atan2(normal.x, normal.z) / (2.0 * PI);
+	uv->v_coord = acos(fmin(1.0, fmax(-1.0, normal.y))) / PI;
+}*/
+
+static void	plane_uv(t_vec normal, t_point hit_point, t_plane *plane, t_uv *uv)
+{
+	t_vec	u_dir;
+	t_vec	v_dir;
+	t_vec	reference;
+
+	if (fabs(normal.y) > 0.9)
+		reference = vector(0, 0, 1);
+	else
+		reference = vector(0, 1, 0);
+	u_dir = vec_normalize(vec_cross_prod(reference, normal));
+	v_dir = vec_cross_prod(normal, u_dir);
+	uv->u_coord = vec_dot(vec_sub(hit_point, ((t_plane *)plane)->point), u_dir);
+	uv->v_coord = vec_dot(vec_sub(hit_point, ((t_plane *)plane)->point), v_dir);
+	uv->u_coord = fmod(uv->u_coord, 1.0);
+	uv->v_coord = fmod(uv->v_coord, 1.0);
+	if (uv->u_coord < 0)
+		uv->u_coord += 1.0;
+	if (uv->v_coord < 0)
+		uv->v_coord += 1.0;
+}
+
+//t_color	get_color_from_texture(t_vec normal, t_point hit_point,
+//	void *object, t_texture *texture, t_material *material)
+t_color	get_color_from_texture(t_vec normal, t_point hit_point,
+	t_texture_info *info)
+{
+	t_uv	uv;
+	int		color;
+	int		pixel[2];
+
+	if (*(t_type *)info->object != SPHERE && *(t_type *)info->object != PLANE)
+		return (info->material->color);
+	if (*(t_type *)info->object == SPHERE)
+	{
+		uv.u_coord = 0.5 + atan2(normal.x, normal.z) / (2.0 * PI);
+		uv.v_coord = acos(fmin(1.0, fmax(-1.0, normal.y))) / PI;
+	}
+	else
+		plane_uv(normal, hit_point, (t_plane *)info->object, &uv);
+	pixel[0] = (int)(uv.u_coord * (info->texture->image_width - 1));
+	pixel[1] = (int)(uv.v_coord * (info->texture->image_height - 1));
+	color = *(int *)(info->texture->data + (pixel[1] * info->texture->size_line
+				+ pixel[0] * (info->texture->bit_per_pixel / 8)));
 	return (int_to_color(color));
 }
