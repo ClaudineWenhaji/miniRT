@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 00:16:12 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/06/03 18:11:32 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/06/04 13:37:22 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,10 +227,8 @@ t_color		checker_cone(t_cone *cone, t_material *material,
 				t_point hit_point);
 t_color		int_to_color(int color);
 t_texture	*get_texture(t_scene *scene, char *path);
-t_color	get_color_from_texture(t_vec normal, t_point hit_point,
-			t_texture_info *info);
-//t_color		get_color_from_texture(t_vec normal, t_point hit_point,
-//				void *object, t_texture *texture, t_material *material);
+t_color		get_color_from_texture(t_vec normal, t_point hit_point,
+				t_texture_info *info);
 t_material	get_obj_material(void *object);
 
 #endif

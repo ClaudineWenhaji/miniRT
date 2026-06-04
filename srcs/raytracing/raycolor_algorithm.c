@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/23 18:19:47 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/06/03 18:17:58 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/06/04 15:02:26 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,132 +14,148 @@
 
 #define MAX_DEPTH 5
 
-static  t_color	c_mult(t_color c, double f)
+static t_color	c_mult(t_color c, double f)
 {
 	return ((t_color){c.red * f, c.green * f, c.blue * f});
 }
 
-static  t_color	c_add(t_color c1, t_color c2)
+static	t_color	c_add(t_color c1, t_color c2)
 {
 	return ((t_color){c1.red + c2.red, c1.green + c2.green, c1.blue + c2.blue});
 }
 
-static  t_color c_prod(t_color color_a, t_color color_b)
+static	t_color	c_prod(t_color color_a, t_color color_b)
 {
-    return ((t_color){color_a.red * color_b.red, color_a.green * color_b.green,
-            color_a.blue * color_b.blue});
+	return ((t_color){color_a.red * color_b.red, color_a.green * color_b.green,
+		color_a.blue * color_b.blue});
 }
 
-static int color_to_int_local(t_color color)
+static int	color_to_int_local(t_color color)
 {
-    int r = (int)fmin(255.0, fmax(0.0, color.red * 255.0));
-    int g = (int)fmin(255.0, fmax(0.0, color.green * 255.0));
-    int b = (int)fmin(255.0, fmax(0.0, color.blue * 255.0));
-    return ((r << 16) | (g << 8) | b);
+	int	r;
+	int	g;
+	int	b;
+
+	r = (int)fmin(255.0, fmax(0.0, color.red * 255.0));
+	g = (int)fmin(255.0, fmax(0.0, color.green * 255.0));
+	b = (int)fmin(255.0, fmax(0.0, color.blue * 255.0));
+	return ((r << 16) | (g << 8) | b);
 }
 
-static t_color default_color(t_scene *scene)
+static t_color	default_color(t_scene *scene)
 {
-    t_list      *light;
-    t_ambient   *amb;
+	t_list		*light;
+	t_ambient	*amb;
 
-    light = scene->lights;
-    while (light)
-    {
-        if (*(t_type_light *)light->content == AMBIENT)
-        {
-            amb = (t_ambient *)light->content;
-            return (c_mult(amb->color, amb->ratio));
-        }
-        light = light->next;
-    }
-    return ((t_color){0.0, 0.0, 0.0});
+	light = scene->lights;
+	while (light)
+	{
+		if (*(t_type_light *)light->content == AMBIENT)
+		{
+			amb = (t_ambient *)light->content;
+			return (c_mult(amb->color, amb->ratio));
+		}
+		light = light->next;
+	}
+	return ((t_color){0.0, 0.0, 0.0});
 }
 
-static void *find_closest_point(t_ray *ray, t_list *objects, double *t_out)
+static void	*find_closest_point(t_ray *ray, t_list *objects, double *t_out)
 {
-    double  closest_t = INFINITY;
-    double  t;
-    t_list  *node = objects;
-    void    *closest_object = NULL;
+	double	closest_t;
+	double	t;
+	t_list	*node;
+	void	*closest_object;
 
-    while (node)
-    {
-        if (intersect_object(node->content, ray, &t))
-        {
-            if (t > EPSILON && t < closest_t)
-            {
-                closest_t = t;
-                closest_object = node->content;
-            }
-        }
-        node = node->next;
-    }
-    *t_out = closest_t;
-    return (closest_object);
+	closest_t = INFINITY;
+	node = objects;
+	closest_object = NULL;
+	while (node)
+	{
+		if (intersect_object(node->content, ray, &t))
+		{
+			if (t > EPSILON && t < closest_t)
+			{
+				closest_t = t;
+				closest_object = node->content;
+			}
+		}
+		node = node->next;
+	}
+	*t_out = closest_t;
+	return (closest_object);
 }
 
-static t_vec get_normal_any(void *obj, t_point hit_point)
+static t_vec	get_normal_any(void *obj, t_point hit_point)
 {
-    t_type type = *(t_type *)obj;
-    if (type == SPHERE)
-        return (vec_normalize(vec_sub(hit_point, ((t_sphere *)obj)->center)));
-    if (type == PLANE)
-        return (vec_normalize(((t_plane *)obj)->normal));
-    if (type == CYLINDER)
-        return (get_normal_cylinder((t_cylinder *)obj, hit_point));
-    if (type == CONE)
-        return (get_normal_cone((t_cone *)obj, hit_point));
-    return (vector(0, 1, 0));
+	t_type	type;
+
+	type = *(t_type *)obj;
+	if (type == SPHERE)
+		return (vec_normalize(vec_sub(hit_point, ((t_sphere *)obj)->center)));
+	if (type == PLANE)
+		return (vec_normalize(((t_plane *)obj)->normal));
+	if (type == CYLINDER)
+		return (get_normal_cylinder((t_cylinder *)obj, hit_point));
+	if (type == CONE)
+		return (get_normal_cone((t_cone *)obj, hit_point));
+	return (vector(0, 1, 0));
 }
 
-t_material get_obj_material(void *object)
+t_material	get_obj_material(void *object)
 {
-    if (*(t_type *)object == SPHERE)
-        return (((t_sphere *)object)->material);
-    if (*(t_type *)object == CYLINDER)
-        return (((t_cylinder *)object)->material);
-    if (*(t_type *)object == CONE)
-        return (((t_cone *)object)->material);
-    if (*(t_type *)object == PLANE)
-        return (((t_plane *)object)->material);
-    return ((t_material){{0,0,0}, 1, 0, 1, 1, 0, 1, 0, NULL, {0,0,0}, {0,0,0}, 0});
+	if (*(t_type *)object == SPHERE)
+		return (((t_sphere *)object)->material);
+	if (*(t_type *)object == CYLINDER)
+		return (((t_cylinder *)object)->material);
+	if (*(t_type *)object == CONE)
+		return (((t_cone *)object)->material);
+	if (*(t_type *)object == PLANE)
+		return (((t_plane *)object)->material);
+	return ((t_material){{0, 0, 0}, 1, 0, 1, 1, 0, 1, 0,
+		NULL, {0, 0, 0}, {0, 0, 0}, 0});
 }
 
-static t_color get_object_color(void *object, t_point hit_point)
+static t_color	get_object_color(void *object, t_point hit_point)
 {
-    t_material mat = get_obj_material(object);
-    if (!mat.is_checkerboard)
-        return (mat.color);
-    if (*(t_type *)object == PLANE)
-        return (checker_plane((t_plane *)object, &mat, hit_point));
-    if (*(t_type *)object == SPHERE)
-        return (checker_sphere((t_sphere *)object, &mat, hit_point));
-    if (*(t_type *)object == CYLINDER)
-        return (checker_cylinder((t_cylinder *)object, &mat, hit_point));
-    if (*(t_type *)object == CONE)
-        return (checker_cone((t_cone *)object, &mat, hit_point));
-    return (mat.color);
+	t_material	mat;
+
+	mat = get_obj_material(object);
+	if (!mat.is_checkerboard)
+		return (mat.color);
+	if (*(t_type *)object == PLANE)
+		return (checker_plane((t_plane *)object, &mat, hit_point));
+	if (*(t_type *)object == SPHERE)
+		return (checker_sphere((t_sphere *)object, &mat, hit_point));
+	if (*(t_type *)object == CYLINDER)
+		return (checker_cylinder((t_cylinder *)object, &mat, hit_point));
+	if (*(t_type *)object == CONE)
+		return (checker_cone((t_cone *)object, &mat, hit_point));
+	return (mat.color);
 }
 
-static t_color phong_model(t_scene *scene, void *obj, t_material *material,
-        t_point hit_point, t_ray *ray, t_list *lights)
+static	t_color	phong_model(t_scene *scene, void *obj, t_material *material,
+			t_point hit_point, t_ray *ray, t_list *lights)
 {
-    t_vec   normal = get_normal_any(obj, hit_point);
+    t_vec   normal;
     t_vec   light_dir;
     t_vec   reflect_dir;
-    t_list  *light_node = lights;
-    t_color res = {0, 0, 0};
+    t_list  *light_node;
+    t_color res;
     double  diff;
     double  spec;
     double  t_shadow;
     void    *shadow_obj;
     t_texture_info info;
+    t_color  obj_color;
 
+    res = (t_color){0, 0, 0};
+    normal = get_normal_any(obj, hit_point);
+    light_node = lights;
     info.object = obj;
     info.material = material;
     info.texture = material->texture;
-    t_color  obj_color = get_object_color(obj, hit_point);
+    obj_color = get_object_color(obj, hit_point);
     if (vec_dot(normal, ray->direction) > 0)
         normal = vec_mult(normal, -1.0);
 
@@ -199,29 +215,32 @@ static t_color phong_model(t_scene *scene, void *obj, t_material *material,
     return (res);
 }
 
-static t_ray calculate_refract(t_vec incident, t_vec normal,
-        t_point hit_point, double ior_in, double ior_out)
+static	t_ray	calculate_refract(t_vec incident, t_vec normal,
+		t_point hit_point, double ior_in, double ior_out)
 {
-    double  cos_i = fmin(vec_dot(vec_mult(incident, -1.0), normal), 1.0);
-    double  eta = ior_out / ior_in;
-    t_ray   ray;
+	double	cos_i;
+	double	eta;
+	t_ray	ray;
+	double	k;
 
-    if (vec_dot(incident, normal) > 0)
-    {
-        eta = ior_in / ior_out;
-        normal = vec_mult(normal, -1.0);
-        cos_i = fmin(vec_dot(vec_mult(incident, -1.0), normal), 1.0);
-    }
-    double k = 1.0 - eta * eta * (1.0 - cos_i * cos_i);
-    if (k < 0)
-    {
-        ray.direction = vector(0, 0, 0);
-        return (ray);
-    }
-    ray.origin = vec_sub(hit_point, vec_mult(normal, EPSILON * 2.0));
-    ray.direction = vec_normalize(vec_add(vec_mult(incident, eta),
-                vec_mult(normal, (eta * cos_i - sqrt(k)))));
-    return (ray);
+	cos_i = fmin(vec_dot(vec_mult(incident, -1.0), normal), 1.0);
+	eta = ior_out / ior_in;
+	if (vec_dot(incident, normal) > 0)
+	{
+		eta = ior_in / ior_out;
+		normal = vec_mult(normal, -1.0);
+		cos_i = fmin(vec_dot(vec_mult(incident, -1.0), normal), 1.0);
+	}
+	k = 1.0 - eta * eta * (1.0 - cos_i * cos_i);
+	if (k < 0)
+	{
+		ray.direction = vector(0, 0, 0);
+		return (ray);
+	}
+	ray.origin = vec_sub(hit_point, vec_mult(normal, EPSILON * 2.0));
+	ray.direction = vec_normalize(vec_add(vec_mult(incident, eta),
+						vec_mult(normal, (eta * cos_i - sqrt(k)))));
+	return (ray);
 }
 
 t_color ray_color_recursive(t_scene *scene, t_ray ray, int depth, double ior)
@@ -274,23 +293,10 @@ t_color ray_color_recursive(t_scene *scene, t_ray ray, int depth, double ior)
     return (final_c);
 }
 
-int ray_color(t_scene *scene, t_ray ray)
+int	ray_color(t_scene *scene, t_ray ray)
 {
-    t_color res;
+	t_color	res;
 
-    res = ray_color_recursive(scene, ray, 0, 1.0);
-    return (color_to_int_local(res));
-}
-
-void put_pixel(t_img *img, int x, int y, int color)
-{
-    char    *dest;
-
-    if (x >= 0 && x < img->image_width && y >= 0 && y < img->image_height)
-    {
-        dest = img->data
-            + (y * img->size_line)
-            + (x * (img->bit_per_pixel / 8));
-        *(unsigned int *)dest = color;
-    }
+	res = ray_color_recursive(scene, ray, 0, 1.0);
+	return (color_to_int_local(res));
 }
