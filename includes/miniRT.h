@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 00:16:12 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/06/04 13:37:22 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/06/05 18:34:15 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,16 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <fcntl.h>
+# include <pthread.h>
 # include "mlx.h"
 
 # define EPSILON 0.00001
 # define WINDOWS_WIDTH 1920
 # define WINDOWS_HEIGHT 1080
 # define PI 3.14159265358979323846
+# define MAX_DEPTH 3
+# define NUM_THREADS 12
+# define SIZE_TILES 32
 
 typedef struct s_vec
 {
@@ -174,6 +178,62 @@ typedef struct s_scene
 	t_win		*window;
 }	t_scene;
 
+typedef struct s_render_config
+{
+	t_scene			*scene;
+	pthread_mutex_t	mutex_r;
+	int				next_tile_id;
+	int				total_tiles;
+	int				tiles_across;
+	int				tiles_size;
+}	t_render_config;
+
+typedef struct s_phong
+{
+	t_scene			*scene;
+	t_color			obj_color;
+	t_material		*material;
+	t_point			hit_point;
+	t_ray			ray;
+	t_vec			normal;
+	void			*obj;
+}	t_phong;
+
+typedef struct s_light_ctx
+{
+	t_light		*light;
+	t_vec		light_dir;
+	double		shadow;
+}	t_light_ctx;
+
+typedef struct s_refract
+{
+	t_vec	incident;
+	t_vec	normal;
+	t_point	hit_point;
+	double	ior_in;
+	double	ior_out;
+}	t_refract;
+
+typedef struct s_ray_ctx
+{
+	void		*object;
+	double		t;
+	t_material	mat;
+	t_point		hit_point;
+	t_color		local;
+	t_color		final;
+	t_color		reflection;
+	t_color		refraction;
+	t_vec		normal;
+	t_vec		r_dir;
+	t_ray		r_ray;
+	t_ray		re_ray;
+	t_phong		p;
+	double		ior;
+	t_refract	refract;
+}	t_ray_ctx;
+
 double		vec_length(t_vec v);
 double		vec_dot(t_vec u, t_vec v);
 double		distance(t_vec a, t_vec b);
@@ -187,6 +247,22 @@ t_vec		vec_cross_prod(t_vec u, t_vec v);
 t_vec		vec_normalize(t_vec v);
 t_vec		vec_inv(t_vec v);
 t_vec		vec_reflection(t_vec v, t_vec n);
+t_color		c_mult(t_color c, double f);
+t_color		c_add(t_color c1, t_color c2);
+t_color		c_prod(t_color color_a, t_color color_b);
+t_vec		get_normal_any(void *obj, t_point hit_point);
+t_color		get_object_color(void *object, t_point hit_point);
+t_color		get_diffuse(t_phong *p, t_light_ctx *ctx);
+t_color		get_specular(t_phong *p, t_light_ctx *ctx);
+void		*find_closest_point(t_ray *ray, t_list *objects, double *t_out);
+t_color		default_color(t_scene *scene);
+t_color		phong_model(t_phong *p, t_list *lights);
+int			color_to_int_local(t_color color);
+t_color		ray_color_recursive(t_scene *scene, t_ray ray,
+				int depth, double ior);
+void		init_refract_ctx(t_ray_ctx *c,
+				t_ray ray);
+t_ray		calculate_refract(t_refract *r);
 int			parsing(char *file, t_scene *scene);
 void		ft_free_table(void **table, int len);
 double		ft_atod(char *number);

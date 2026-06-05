@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 14:35:40 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/05/22 17:29:29 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/06/05 17:33:20 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,18 +54,4 @@ void	setup_viewport(t_camera *camera, t_viewport *viewport, t_img *img)
 	viewport->pixel_center_loc = vec_add(viewport->viewport_upper_left,
 			vec_mult(vec_add(viewport->pixel_delta_u,
 					viewport->pixel_delta_v), 0.5));
-}
-
-t_ray	camera_ray(t_camera *camera, t_viewport *viewport,
-		int pixel_x, int pixel_y)
-{
-	t_ray	ray;
-	t_vec	pixel_center;
-
-	pixel_center = vec_add(viewport->pixel_center_loc,
-			vec_add(vec_mult(viewport->pixel_delta_u, (double)pixel_x),
-				vec_mult(viewport->pixel_delta_v, (double)pixel_y)));
-	ray.origin = camera->viewpoint;
-	ray.direction = vec_normalize(vec_sub(pixel_center, camera->viewpoint));
-	return (ray);
 }
