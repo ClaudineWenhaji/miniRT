@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/03 14:34:15 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/06/03 14:34:24 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/06/08 14:47:57 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,6 @@ t_color	checker_cone(t_cone *cone, t_material *material,
 	cone_basis(cone->axis, &uv.tangent, &uv.bitangent);
 	uv.angle = atan2(vec_dot(local, uv.bitangent), vec_dot(local, uv.tangent));
 	uv.u_coord = (uv.angle + PI) / (2.0 * PI);
-	if (uv.u_coord >= 1.0)
-		uv.u_coord = 0.0;
-	uv.v_coord = vec_dot(local, cone->axis) / cone->height;
 	if (uv.u_coord >= 1.0)
 		uv.u_coord = 0.0;
 	uv.v_coord = vec_dot(local, cone->axis) / cone->height;

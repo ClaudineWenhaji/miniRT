@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:13:31 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/06/03 14:50:12 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/06/12 18:54:33 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	ft_free_table(void **table, int len)
 		len = INT_MAX;
 	while (table[++i] && i < len)
 		free(table[i]);
+	free(table);
 }
 
 static void	clean_window(t_win *window)

@@ -30,7 +30,7 @@ $(NAME): $(OBJS) $(LIBFT)
 	@$(CC) $(OBJS) $(LDFLAGS) $(MLX_FLAGS) -o $(NAME)
 	@printf "$(GREEN)$(NAME) created successfully!$(RESET)\n"
 
-%.o: %.c
+%.o: %.c includes/miniRT.h
 	@printf "$(YELLOW)Compiling $<...$(RESET)\n"
 	@$(CC) $(CFLAGS) -I$(MLX_DIR) -c $< -o $@
 
@@ -54,6 +54,8 @@ fclean: clean
 	@$(MAKE) -C $(LIBFT_DIR) fclean
 
 re: fclean all
+
+bonus : all
 
 gdb: CFLAGS += -g3
 gdb: re

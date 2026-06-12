@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/11 00:16:12 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/06/05 18:34:15 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/06/11 17:19:04 by vnaoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ typedef struct s_material
 	double		ior;
 	double		transparency;
 	double		emissive;
-	int			is_checkerboard;	
+	int			is_checkerboard;
 	t_texture	*texture;
 	t_color		checker_color1;
 	t_color		checker_color2;
@@ -197,6 +197,7 @@ typedef struct s_phong
 	t_ray			ray;
 	t_vec			normal;
 	void			*obj;
+	t_color			specular;
 }	t_phong;
 
 typedef struct s_light_ctx
@@ -233,6 +234,14 @@ typedef struct s_ray_ctx
 	double		ior;
 	t_refract	refract;
 }	t_ray_ctx;
+
+typedef struct s_rect
+{
+	int	x_start;
+	int	y_start;
+	int	x_end;
+	int	y_end;
+}	t_rect;
 
 double		vec_length(t_vec v);
 double		vec_dot(t_vec u, t_vec v);
@@ -306,5 +315,7 @@ t_texture	*get_texture(t_scene *scene, char *path);
 t_color		get_color_from_texture(t_vec normal, t_point hit_point,
 				t_texture_info *info);
 t_material	get_obj_material(void *object);
+void		handle_move(int keysym, t_camera *cam, double speed);
+void		handle_rotation(int keysym, t_camera *cam);
 
 #endif

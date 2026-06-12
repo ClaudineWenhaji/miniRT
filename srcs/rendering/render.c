@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 18:38:08 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/06/05 18:51:28 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/06/08 12:38:27 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,18 +25,17 @@ static int	get_next_tile(t_render_config *data)
 	return (tile_to_do);
 }
 
-static void	render_bloc(t_scene *scene, int x_start, int y_start,
-		int x_end, int y_end)
+static void	render_bloc(t_scene *scene, t_rect rect)
 {
 	int		pixel_x;
 	int		pixel_y;
 	t_ray	ray;
 
-	pixel_y = y_start;
-	while (pixel_y < y_end)
+	pixel_y = rect.y_start;
+	while (pixel_y < rect.y_end)
 	{
-		pixel_x = x_start;
-		while (pixel_x < x_end)
+		pixel_x = rect.x_start;
+		while (pixel_x < rect.x_end)
 		{
 			ray = camera_ray(&scene->camera, &scene->viewport,
 					pixel_x, pixel_y);
@@ -52,22 +51,19 @@ static	void	*thread_routine(void *arg)
 {
 	t_render_config	*config;
 	int				tile_id;
-	int				tile_x;
-	int				tile_y;
-	int				x_end;
-	int				y_end;
+	t_rect			rect;
 
 	config = (t_render_config *)arg;
 	tile_id = get_next_tile(config);
 	while (tile_id >= 0)
 	{
-		tile_x = (tile_id % config->tiles_across) * config->tiles_size;
-		tile_y = (tile_id / config->tiles_across) * config->tiles_size;
-		x_end = (int)fmin(tile_x + config->tiles_size,
+		rect.x_start = (tile_id % config->tiles_across) * config->tiles_size;
+		rect.y_start = (tile_id / config->tiles_across) * config->tiles_size;
+		rect.x_end = (int)fmin(rect.x_start + config->tiles_size,
 				config->scene->window->img->image_width);
-		y_end = (int)fmin(tile_y + config->tiles_size,
+		rect.y_end = (int)fmin(rect.y_start + config->tiles_size,
 				config->scene->window->img->image_height);
-		render_bloc(config->scene, tile_x, tile_y, x_end, y_end);
+		render_bloc(config->scene, rect);
 		tile_id = get_next_tile(config);
 	}
 	return (NULL);

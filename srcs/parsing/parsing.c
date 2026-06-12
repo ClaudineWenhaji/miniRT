@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 17:23:21 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/05/29 01:18:45 by vnaoussi         ###   ########.fr       */
+/*   Updated: 2026/06/12 14:54:26 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,8 @@ static int	split_and_get_scene(char *line, t_scene *scene)
 		result = get_light(split_line, &scene->lights);
 	else if (ft_strcmp(split_line[0], "C") == 0)
 		result = setup_camera(split_line, &scene->camera);
-	else if (ft_strcmp(split_line[0], "pl") == 0
-		|| ft_strcmp(split_line[0], "sp") == 0
-		|| ft_strcmp(split_line[0], "cy") == 0
+	else if (ft_strcmp(split_line[0], "pl") == 0 || ft_strcmp(split_line[0],
+			"sp") == 0 || ft_strcmp(split_line[0], "cy") == 0
 		|| ft_strcmp(split_line[0], "co") == 0)
 		result = get_objects(scene, split_line, &scene->objects);
 	else
@@ -76,12 +75,30 @@ static int	split_and_get_scene(char *line, t_scene *scene)
 	return (ft_free_table((void **)split_line, -1), result);
 }
 
+int	check_extension(char *file)
+{
+	int	len;
+
+	len = 0;
+	if (!file)
+		return (0);
+	while (file[len])
+		len++;
+	if (len <= 3)
+		return (0);
+	if (ft_strcmp(file + len - 3, ".rt") == 0)
+		return (1);
+	return (0);
+}
+
 int	parsing(char *file, t_scene *scene)
 {
 	int		fd;
 	char	*line;
 	int		i;
 
+	if (!check_extension(file))
+		return (printf("Error\nfile doesn't exit"), 0);
 	fd = open(file, O_RDONLY);
 	if (fd == -1)
 		return (printf("Error\nfile doesn't exit"), 0);
@@ -92,7 +109,7 @@ int	parsing(char *file, t_scene *scene)
 		while (line[i] && (line[i] == ' ' || line[i] == '\t'
 				|| line[i] == '\n'))
 			i++;
-		if (line[i])
+		if (line[i] && line[i] != '#')
 			if (!split_and_get_scene(line, scene))
 				return (free(line), close(fd), 0);
 		free(line);

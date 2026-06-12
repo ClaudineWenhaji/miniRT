@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 18:19:32 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/06/05 18:23:14 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/06/11 18:33:21 by vnaoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ t_ray	calculate_refract(t_refract *r)
 	double	k;
 
 	cos_i = fmin(vec_dot(vec_mult(r->incident, -1.0), r->normal), 1.0);
-	eta = r->ior_out / r->ior_in;
+	eta = r->ior_in / r->ior_out;
 	if (vec_dot(r->incident, r->normal) > 0)
 	{
-		eta = r->ior_in / r->ior_out;
+		eta = r->ior_in / 1.0;
 		r->normal = vec_mult(r->normal, -1.0);
 		cos_i = fmin(vec_dot(vec_mult(r->incident, -1.0), r->normal), 1.0);
 	}

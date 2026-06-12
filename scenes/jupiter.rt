@@ -1,5 +1,0 @@
-A 0.1 255,255,255
-C 0,0,150 0,0,-1 60
-L 150,100,100 2.0 255,255,255
-sp 0,0,0 100.0 255,255,255 dif:1.0 spe:0.1 shi:5.0 tex:textures/jupiter.xpm
-sp 0,0,0 1000.0 255,255,255 emi:1.0 tex:textures/starmap.xpm

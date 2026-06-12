@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 17:35:45 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/06/05 18:15:21 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/06/11 17:20:54 by vnaoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,6 @@ static double	get_shadow_factor(t_phong *p, t_light *light)
 			vec_mult(p->normal, EPSILON * 2.0));
 	sray.direction = vec_normalize(dist);
 	obj = find_closest_point(&sray, p->scene->objects, &t);
-	if (obj == p->obj)
-		return (1.0);
 	if (!obj || t >= vec_length(dist))
 		return (1.0);
 	if (get_obj_material(obj).transparency > 0)
@@ -71,7 +69,7 @@ static t_color	process_light(t_phong *p, t_light *light)
 	if (ctx.shadow <= 0.0)
 		return (res);
 	res = c_add(res, get_diffuse(p, &ctx));
-	res = c_add(res, get_specular(p, &ctx));
+	p->specular = c_add(p->specular, get_specular(p, &ctx));
 	return (res);
 }
 
@@ -80,6 +78,7 @@ t_color	phong_model(t_phong *p, t_list *lights)
 	t_color	res;
 
 	res = (t_color){0, 0, 0};
+	p->specular = (t_color){0, 0, 0};
 	if (init_phong(p, p->obj, p->material))
 		return (c_mult(p->obj_color,
 				p->material->emissive));

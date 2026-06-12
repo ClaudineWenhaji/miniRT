@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/23 18:19:47 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/06/05 18:35:20 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/06/11 18:33:31 by vnaoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,11 @@ static t_color	compute_refraction(t_scene *scene,
 				t_ray ray,
 				int depth)
 {
-	if (c->mat.transparency <= 0)
+	if (c->mat.transparency == 0)
 		return ((t_color){0, 0, 0});
 	init_refract_ctx(c, ray);
 	c->re_ray = calculate_refract(&c->refract);
-	if (vec_length(c->re_ray.direction) <= 0.0)
+	if (vec_length(c->re_ray.direction) == 0.0)
 		return ((t_color){0, 0, 0});
 	return (ray_color_recursive(scene,
 			c->re_ray,
@@ -79,6 +79,7 @@ static t_color	combine_colors(t_ray_ctx *c,
 			c_mult(refraction, c->mat.transparency));
 	final = c_add(final,
 			c_mult(reflection, c->mat.k_spec));
+	final = c_add(final, c->p.specular);
 	return (final);
 }
 
@@ -102,44 +103,3 @@ t_color	ray_color_recursive(t_scene *scene, t_ray ray,
 	refraction = compute_refraction(scene, &c, ray, depth);
 	return (combine_colors(&c, reflection, refraction));
 }
-
-/*t_color	ray_color_recursive(t_scene *scene, t_ray ray,
-			int depth, double ior)
-{
-	t_ray_ctx	c;
-
-	c.final = (t_color){0, 0, 0};
-	if (depth >= MAX_DEPTH)
-		return ((t_color){0, 0, 0});
-	if (!init_ray_ctx(&c, scene, ray))
-		return (default_color(scene));
-	c.local = phong_model(&c.p, scene->lights);
-	if (c.mat.transparency <= 0 && c.mat.k_spec <= 0)
-		return (c.local);
-	c.normal = get_normal_any(c.object, c.hit_point);
-	c.reflection = (t_color){0, 0, 0};
-	c.refraction = (t_color){0, 0, 0};
-	if (c.mat.k_spec > 0)
-	{
-		c.r_dir = vec_normalize(vec_sub(ray.direction,
-					vec_mult(c.normal,
-						2.0 * vec_dot(c.normal, ray.direction))));
-		c.r_ray = (t_ray){vec_add(c.hit_point,
-				vec_mult(c.normal, EPSILON * 2.0)), c.r_dir};
-		c.reflection = ray_color_recursive(scene, c.r_ray,
-				depth + 1, ior);
-	}
-	if (c.mat.transparency > 0)
-	{
-		c.re_ray = calculate_refract(ray.direction, c.normal,
-				c.hit_point, c.mat.ior, ior);
-		if (vec_length(c.re_ray.direction) > 0)
-			c.refraction = ray_color_recursive(scene, c.re_ray,
-					depth + 1, c.mat.ior);
-	}
-	c.final = c_add(c_mult(c.local, (1.0 - c.mat.transparency)),
-			c_mult(c.refraction, c.mat.transparency));
-	c.final = c_add(c.final,
-			c_mult(c.reflection, c.mat.k_spec));
-	return (c.final);
-}*/
